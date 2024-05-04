@@ -19,7 +19,7 @@ class airasheJsonRecipe(ConanFile):
     default_options = {"shared": False, "fPIC": True}
 
     # Exported sources
-    exports_sources = "CMakeLists.txt", "src/*.cpp", "src/*.h*"
+    exports_sources = "CMakeLists.txt", "src/*.cpp", "src/*.h*", "cmake/*"
 
     # Call before everything to define version
     def init(self):
@@ -27,8 +27,7 @@ class airasheJsonRecipe(ConanFile):
             path = os.path.join(self.recipe_folder, "CMakeLists.txt")
             with open(path, "r") as f:
                 content = f.read()
-                regexp = fr"{self.name} LANGUAGES CXX VERSION (.*)\)"
-                version = re.search(regexp.encode(), content.encode()).group(1).decode()
+                version = re.search(b"\(AIRASHEJSON_VERSION (.*)\)", content.encode()).group(1).decode()
                 self.version = version
                 pass
         except Exception as e:
@@ -47,8 +46,6 @@ class airasheJsonRecipe(ConanFile):
         cmake_layout(self)
 
     def generate(self):
-        deps = CMakeDeps(self)
-        deps.generate()
         tc = CMakeToolchain(self)
         tc.generate()
 
@@ -62,4 +59,6 @@ class airasheJsonRecipe(ConanFile):
         cmake.install()
 
     def package_info(self):
+        self.cpp_info.set_property("cmake_find_mode", "none")
+        self.cpp_info.builddirs.append(os.path.join("lib", "cmake", "airashe-json"))
         self.cpp_info.libs = ["airashe-json"]
