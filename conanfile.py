@@ -19,7 +19,7 @@ class airasheJsonRecipe(ConanFile):
     default_options = {"shared": False, "fPIC": True}
 
     # Exported sources
-    exports_sources = "CMakeLists.txt", "src/*.cpp", "src/*.h*", "cmake/*"
+    exports_sources = "CMakeLists.txt", "src/*.cpp", "src/*.h*", "cmake/*", "tests/*.cc", "tests/CMakeLists.txt"
 
     # Call before everything to define version
     def init(self):
@@ -47,16 +47,27 @@ class airasheJsonRecipe(ConanFile):
 
     def generate(self):
         tc = CMakeToolchain(self)
+        if (self.conf.get("tools.build:skip_test", default=False)):
+            tc.variables["BUILD_TESTING"] = False
         tc.generate()
 
     def build(self):
         cmake = CMake(self)
         cmake.configure()
         cmake.build()
+        if not self.conf.get("tools.build:skip_test", default=False):
+            test_folder = os.path.join("tests")
+            if self.settings.os == "Windows":
+                test_folder = os.path.join("tests", str(self.settings.build_type))
+            self.output.highlight("Running tests...")
+            self.run(os.path.join(test_folder, "airashe-json-tests"))
 
     def package(self):
         cmake = CMake(self)
         cmake.install()
+
+    def requirements(self):
+        self.test_requires("gtest/1.14.0")
 
     def package_info(self):
         self.cpp_info.set_property("cmake_find_mode", "none")
