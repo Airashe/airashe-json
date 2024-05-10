@@ -24,6 +24,7 @@ namespace airashe::json
          */
         jtoken_value _value;
     public:
+        jtoken();
         jtoken(const jtoken& other);
         jtoken& operator=(const jtoken& other);
         ~jtoken();
@@ -39,5 +40,15 @@ namespace airashe::json
          * @param string value of token.
          */
         jtoken(const char* string);
+
+        /**
+         * Get child token within container.
+         * @param index index of token.
+         * @return Child token.
+         */
+        jtoken& at(size_t index);
+        jtoken& operator[](size_t index) { return at(index);}
+
+        const char* c_str() const;
     };
 }

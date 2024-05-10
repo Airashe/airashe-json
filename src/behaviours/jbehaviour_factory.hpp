@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <map>
 
+#include "jarray_behaviour.hpp"
 #include "jstring_behaviour.hpp"
 
 namespace airashe::json
@@ -18,7 +19,8 @@ namespace airashe::json
          * Behaviour instances.
          */
         inline static std::map<jtoken_type, jtoken_behaviour*> _behaviours = {
-            {jtoken_string, new jstring_behaviour}
+            {jtoken_string, new jstring_behaviour},
+            {jtoken_array, new jarray_behaviour}
         };
     public:
         /**

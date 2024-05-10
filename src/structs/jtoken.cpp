@@ -6,9 +6,16 @@
 
 namespace airashe::json
 {
+    jtoken::jtoken()
+    {
+        _type = jtoken_type::jtoken_err;
+        _value.string = nullptr;
+    }
+
     jtoken::jtoken(const jtoken& other)
     {
         _type = other._type;
+		jbehaviour_factory::get_behaviour(_type)->copy_value(&_value, &other._value);
     }
 
     jtoken& jtoken::operator=(const jtoken& other)
@@ -33,5 +40,16 @@ namespace airashe::json
     {
         _type = jtoken_type::jtoken_string;
         jbehaviour_factory::get_behaviour(_type)->assign_value(&_value, string);
+    }
+
+    jtoken& jtoken::at(const size_t index)
+    {
+        auto result = jbehaviour_factory::get_behaviour(_type)->at(&_value, index);
+        return jbehaviour_factory::get_behaviour(_type)->at(&_value, index);
+    }
+
+    const char* jtoken::c_str() const
+    {
+        return jbehaviour_factory::get_behaviour(_type)->c_str(&_value);
     }
 }

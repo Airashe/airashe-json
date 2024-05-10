@@ -18,6 +18,7 @@ set(AIRASHEJSON_CONFIG_FILE "${AIRASHEJSON_PROJECT_NAME}-config.cmake")
 # create target
 add_library(${AIRASHEJSON_PROJECT_NAME}
     src/behaviours/jbehaviour_factory.hpp
+    src/behaviours/jarray_behaviour.hpp
     src/behaviours/jstring_behaviour.hpp 
     src/behaviours/jtoken_behaviour.hpp 
     src/structs/jtoken.cpp
@@ -42,10 +43,7 @@ endif()
 
 # add tools to project
 if(NOT AIRASHE_INCLUDE_TOOLS STREQUAL OFF)
-    target_sources(${AIRASHEJSON_PROJECT_NAME} PUBLIC
-    tools/create_package.ps1
-    tools/create_project.ps1
-)
+
 endif()
 
 # set public api
