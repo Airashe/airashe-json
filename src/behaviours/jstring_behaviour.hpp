@@ -32,6 +32,9 @@ namespace airashe::json
                 return;
             }
 
+            if (target->string != nullptr)
+                delete[] target->string;
+
 			size_t length = strlen(source->string);
 			target->string = new char[length + 1];
 			strcpy(target->string, source->string);

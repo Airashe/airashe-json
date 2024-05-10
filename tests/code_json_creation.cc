@@ -39,7 +39,10 @@ TEST(JSONArray, BasicTest)
 {
     try
     {
-        test_json_array();
+        while (true)
+        {
+            test_json_array();
+        }
     }
     catch (std::exception& e)
     {

@@ -28,7 +28,10 @@ namespace airashe::json
         return *this;
     }
 
-    jtoken::~jtoken() { jbehaviour_factory::get_behaviour(_type)->cleanup(&_value); }
+    jtoken::~jtoken()
+    {
+        jbehaviour_factory::get_behaviour(_type)->cleanup(&_value);
+    }
     
     jtoken::jtoken(std::initializer_list<jtoken> list)
     {
@@ -44,7 +47,6 @@ namespace airashe::json
 
     jtoken& jtoken::at(const size_t index)
     {
-        auto result = jbehaviour_factory::get_behaviour(_type)->at(&_value, index);
         return jbehaviour_factory::get_behaviour(_type)->at(&_value, index);
     }
 
