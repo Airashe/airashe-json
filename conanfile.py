@@ -15,8 +15,8 @@ class airasheJsonRecipe(ConanFile):
 
     # Binary configuration
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False], "fPIC": [True, False]}
-    default_options = {"shared": False, "fPIC": True}
+    options = {"shared": [True, False], "fPIC": [True, False], "include_tools": [True, False]}
+    default_options = {"shared": False, "fPIC": True, "include_tools": False}
 
     # Exported sources
     exports_sources = "CMakeLists.txt", "src/*.cpp", "src/*.h*", "cmake/*", "tests/*.cc", "tests/CMakeLists.txt"
@@ -49,6 +49,9 @@ class airasheJsonRecipe(ConanFile):
         tc = CMakeToolchain(self)
         if (self.conf.get("tools.build:skip_test", default=False)):
             tc.variables["BUILD_TESTING"] = False
+        if (self.options["include_tools"]):
+            tc.variables["AIRASHE_INCLUDE_TOOLS"] = True
+            self.exports_sources = self.exports_sources, "tools/*"
         tc.generate()
 
     def build(self):

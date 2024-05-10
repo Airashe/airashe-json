@@ -12,7 +12,7 @@ endif()
 
 # setup tests target
 add_executable(${AIRASHEJSON_TEST_PROJECT_NAME}
-    parsing.cc
+    code_json_creation.cc
 )
 
 # link dependencies

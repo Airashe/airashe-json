@@ -2,7 +2,10 @@
 
 namespace airashe::json
 {
-  class json_parser
+  /**
+   * Class for parsing JSON.
+   */
+  class parser
   {
   public:
     void parse(const char *json);

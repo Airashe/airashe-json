@@ -17,7 +17,13 @@ set(AIRASHEJSON_CONFIG_FILE "${AIRASHEJSON_PROJECT_NAME}-config.cmake")
 
 # create target
 add_library(${AIRASHEJSON_PROJECT_NAME} 
-    src/json_parser.cpp
+    src/parser.cpp
+    src/parser.hpp
+    src/lexer.cpp
+    src/lexer.hpp
+    src/structs/jtoken.hpp
+
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 set_property(TARGET ${AIRASHEJSON_PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 set_target_properties(${AIRASHEJSON_PROJECT_NAME} PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})
@@ -32,10 +38,16 @@ if(NOT BUILD_TESTING STREQUAL OFF)
     add_subdirectory(tests)
 endif()
 
-# set public api
-set_target_properties(${AIRASHEJSON_PROJECT_NAME} PROPERTIES PUBLIC_HEADER 
-    "src/json_parser.hpp"
+# add tools to project
+if(NOT AIRASHE_INCLUDE_TOOLS STREQUAL OFF)
+    target_sources(${AIRASHEJSON_PROJECT_NAME} PUBLIC
+    tools/create_package.ps1
+    tools/create_project.ps1
 )
+endif()
+
+# set public api
+set_target_properties(${AIRASHEJSON_PROJECT_NAME} PROPERTIES PUBLIC_HEADER "src/parser.hpp;src/structs/jtoken.hpp")
 
 # set include directories
 target_include_directories(${AIRASHEJSON_PROJECT_NAME} PUBLIC
