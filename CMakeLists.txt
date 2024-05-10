@@ -16,13 +16,15 @@ set(AIRASHEJSON_CONFIGVERSION_FILE "${AIRASHEJSON_PROJECT_NAME}-config-version.c
 set(AIRASHEJSON_CONFIG_FILE "${AIRASHEJSON_PROJECT_NAME}-config.cmake")
 
 # create target
-add_library(${AIRASHEJSON_PROJECT_NAME} 
-    src/parser.cpp
-    src/parser.hpp
-    src/lexer.cpp
-    src/lexer.hpp
+add_library(${AIRASHEJSON_PROJECT_NAME}
+    src/behaviours/jbehaviour_factory.hpp
+    src/behaviours/jstring_behaviour.hpp 
+    src/behaviours/jtoken_behaviour.hpp 
+    src/structs/jtoken.cpp
     src/structs/jtoken.hpp
-
+    src/structs/jtoken_type.hpp
+    src/structs/jtoken_value.hpp
+    
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 set_property(TARGET ${AIRASHEJSON_PROJECT_NAME} PROPERTY CXX_STANDARD 20)
@@ -47,7 +49,7 @@ if(NOT AIRASHE_INCLUDE_TOOLS STREQUAL OFF)
 endif()
 
 # set public api
-set_target_properties(${AIRASHEJSON_PROJECT_NAME} PROPERTIES PUBLIC_HEADER "src/parser.hpp;src/structs/jtoken.hpp")
+set_target_properties(${AIRASHEJSON_PROJECT_NAME} PROPERTIES PUBLIC_HEADER "src/structs/jtoken.hpp")
 
 # set include directories
 target_include_directories(${AIRASHEJSON_PROJECT_NAME} PUBLIC

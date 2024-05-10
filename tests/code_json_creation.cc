@@ -1,9 +1,12 @@
 #include "gtest/gtest.h"
 #include "structs/jtoken.hpp"
 
-TEST(BasicTypes, BasicTest)
+void test_json_string()
 {
-    airashe::json::jtoken str;//= "string_value";
-    //EXPECT_EQ(str.c_str(), "string_value");
-    //airashe::json::jtoken int_number = 123;
+    airashe::json::jtoken token = "test_string";
+}
+
+TEST(JSONString, BasicTest)
+{
+    test_json_string();
 }
