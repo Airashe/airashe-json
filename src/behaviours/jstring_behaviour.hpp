@@ -40,7 +40,7 @@ namespace airashe::json
 			strcpy(target->string, source->string);
         }
 
-        jtoken& at(jtoken_value* value, const size_t index) const override
+        jtoken& at(jtoken_value* value, const jindex index) const override
         {
             throw std::logic_error("Can not extract jtoken from string.");
         }

@@ -3,6 +3,7 @@
 namespace airashe::json
 {
     union jtoken_value;
+    struct jindex;
 
     /**
      * Interface for objects responsible for tokens behaviour in c++ code.
@@ -39,7 +40,7 @@ namespace airashe::json
           * @param index index of element.
           * @return reference to element.
           */
-        virtual jtoken& at(jtoken_value* value, const size_t index) const = 0;
+        virtual jtoken& at(jtoken_value* value, const jindex index) const = 0;
 
         virtual const char* c_str(jtoken_value const* value) const = 0;
     };

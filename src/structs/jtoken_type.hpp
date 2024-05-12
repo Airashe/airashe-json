@@ -15,7 +15,12 @@ namespace airashe::json
         /**
          * Array.
          */
-        jtoken_array = 0x2, 
+        jtoken_array = 0x2,
+
+        /**
+         * Object.
+         */
+        jtoken_object = 0x4, 
 
         /**
          * Invalid token.

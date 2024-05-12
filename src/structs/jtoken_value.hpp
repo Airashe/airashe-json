@@ -4,6 +4,7 @@
 namespace airashe::json
 {
     struct jtoken;
+    struct jindex;
     
     /**
      * Value of JSON token.
@@ -19,7 +20,7 @@ namespace airashe::json
         /**
          * Childrens of current token.
          */
-        std::map<size_t, jtoken>* childrens;
+        std::map<jindex, jtoken>* childrens;
 
         jtoken_value()
         {

@@ -1,14 +1,15 @@
 ﻿#pragma once
 #include <cstring>
-#include <initializer_list>
 
 #include "jtoken_type.hpp"
 #include "jtoken_value.hpp"
+#include "jindex.hpp"
 
 namespace airashe::json
 {
     class jtoken_behaviour;
-    
+    struct jproperty;
+
     /**
      * Token of JSON structure.
      */
@@ -23,17 +24,12 @@ namespace airashe::json
          * Value of token. 
          */
         jtoken_value _value;
+
     public:
         jtoken();
         jtoken(const jtoken& other);
         jtoken& operator=(const jtoken& other);
         ~jtoken();
-
-        /**
-         * Initialize json array, with list of jtokens.
-         * @param list array elements.
-         */
-        jtoken(std::initializer_list<jtoken> list);
 
         /**
          * Initialize string token.
@@ -46,9 +42,54 @@ namespace airashe::json
          * @param index index of token.
          * @return Child token.
          */
-        jtoken& at(size_t index);
-        jtoken& operator[](size_t index) { return at(index);}
+        jtoken& at(jindex index);
+        jtoken& operator[](jindex index) { return at(index); }
 
+        /**
+         * Convert token to string.
+         * @return Returns token as a string value.
+         */
         const char* c_str() const;
+
+        /**
+         * Create JSON array.
+         * @return Returns token with array type.
+         */
+        template <typename... Args, typename=jtoken>
+        friend jtoken jarray();
+
+        /**
+         * Create JSON array.
+         * @param args Tokens to add to array.
+         * @return Returns token with array type.
+         */
+        template <typename... Args, typename=jtoken>
+        friend jtoken jarray(Args... args);
     };
+
+    template <typename... Args, typename>
+    jtoken jarray()
+    {
+        jtoken array = jtoken();
+        array._type = jtoken_array;
+        return array;
+    }
+
+    template <typename... Args, typename>
+    jtoken jarray(Args... args)
+    {
+        auto array = jarray();
+
+        if (sizeof ...(args) > 0)
+        {
+            int i = 0;
+            for (const auto p : {args...})
+            {
+                array[i] = p;
+                i++;
+            }
+        }
+
+        return array;
+    }
 }
