@@ -51,45 +51,13 @@ namespace airashe::json
          */
         const char* c_str() const;
 
-        /**
-         * Create JSON array.
-         * @return Returns token with array type.
-         */
-        template <typename... Args, typename=jtoken>
         friend jtoken jarray();
-
-        /**
-         * Create JSON array.
-         * @param args Tokens to add to array.
-         * @return Returns token with array type.
-         */
-        template <typename... Args, typename=jtoken>
-        friend jtoken jarray(Args... args);
+        friend jtoken jobject();
     };
 
-    template <typename... Args, typename>
-    jtoken jarray()
-    {
-        jtoken array = jtoken();
-        array._type = jtoken_array;
-        return array;
-    }
+    jtoken jarray();
+    jtoken jarray(std::initializer_list<jtoken> childrens);
 
-    template <typename... Args, typename>
-    jtoken jarray(Args... args)
-    {
-        auto array = jarray();
-
-        if (sizeof ...(args) > 0)
-        {
-            int i = 0;
-            for (const auto p : {args...})
-            {
-                array[i] = p;
-                i++;
-            }
-        }
-
-        return array;
-    }
+    jtoken jobject();
+    jtoken jobject(std::initializer_list<jproperty> childrens);
 }

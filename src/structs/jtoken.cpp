@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "jproperty.hpp"
 #include "behaviours/jbehaviour_factory.hpp"
 
 namespace airashe::json
@@ -50,5 +51,40 @@ namespace airashe::json
     const char* jtoken::c_str() const
     {
         return jbehaviour_factory::get_behaviour(_type)->c_str(&_value);
+    }
+
+    jtoken jarray()
+    {
+        auto array = jtoken();
+        array._type = jtoken_type::jtoken_array;
+        return array;
+    }
+
+    jtoken jarray(std::initializer_list<jtoken> childrens)
+    {
+        auto array = jarray();
+        const jtoken* children = childrens.begin();
+        for(int i = 0; i < childrens.size(); i++)
+            array[i] = children[i];
+
+        return array;
+    }
+
+    jtoken jobject()
+    {
+        auto object = jtoken();
+        object._type = jtoken_type::jtoken_object;
+
+        return object;
+    }
+
+    jtoken jobject(std::initializer_list<jproperty> childrens)
+    {
+        auto object = jobject();
+        const jproperty* children = childrens.begin();
+        for(auto& property : childrens)
+            object[property.key] = property.value;
+
+        return object;
     }
 }
