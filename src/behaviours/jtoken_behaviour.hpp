@@ -42,6 +42,11 @@ namespace airashe::json
           */
         virtual jtoken& at(jtoken_value* value, const jindex index) const = 0;
 
+        /**
+         * Convert value to string.
+         * @param value Value to convert.
+         * @return Returns string representation of value.
+         */
         virtual const char* c_str(jtoken_value const* value) const = 0;
     };
 }

@@ -55,9 +55,29 @@ namespace airashe::json
         friend jtoken jobject();
     };
 
+    /**
+     * Create JSON array token.
+     * @return Returns created array.
+     */
     jtoken jarray();
+
+    /**
+     * Create JSON array token.
+     * @param childrens Child elements that will be put to array.
+     * @return Returns created array.
+     */
     jtoken jarray(std::initializer_list<jtoken> childrens);
 
+    /**
+     * Create JSON object token.
+     * @return Created object.
+     */
     jtoken jobject();
+
+    /**
+     * Create JSON object token.
+     * @param childrens Properties that will be put to object.
+     * @return Created object.
+     */
     jtoken jobject(std::initializer_list<jproperty> childrens);
 }

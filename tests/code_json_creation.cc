@@ -6,6 +6,7 @@ using namespace airashe::json;
 void test_json_string()
 {
     jtoken str = "test_string";
+    ASSERT_STREQ(str.c_str(), "test_string");
 }
 
 void test_json_array()
@@ -29,39 +30,43 @@ void test_json_object()
     });
 
     ASSERT_STREQ(obj["key1"].c_str(), "val1");
+
+    jtoken empty_obj = jobject();
+    obj["key3"] = "val3";
+    ASSERT_STREQ(obj["key3"].c_str(), "val3");
 }
 
-TEST(JSONString, BasicTest)
+TEST(JSON, CreateString)
 {
     try
     {
         test_json_string();
     }
-    catch (std::exception& e)
+    catch (std::exception&)
     {
         FAIL();
     }
 }
 
-TEST(JSONArray, BasicTest)
+TEST(JSON, CreateArray)
 {
     try
     {
         test_json_array();
     }
-    catch (std::exception& e)
+    catch (std::exception&)
     {
         FAIL();
     }
 }
 
-TEST(JSONObject, BasicTest)
+TEST(JSON, CreateObject)
 {
     try
     {
         test_json_object();
     }
-    catch (std::exception& e)
+    catch (std::exception&)
     {
         FAIL();
     }

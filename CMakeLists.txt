@@ -18,6 +18,7 @@ set(AIRASHEJSON_CONFIG_FILE "${AIRASHEJSON_PROJECT_NAME}-config.cmake")
 # create target
 add_library(${AIRASHEJSON_PROJECT_NAME}
     src/behaviours/jbehaviour_factory.hpp
+    src/behaviours/jcontainer_behaviour.hpp 
     src/behaviours/jstring_behaviour.hpp 
     src/behaviours/jtoken_behaviour.hpp 
     src/structs/jtoken.cpp
