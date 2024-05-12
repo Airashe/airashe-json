@@ -15,6 +15,11 @@ namespace airashe::json
         strcpy(_name, value);
     }
 
+    jindex::~jindex()
+    {
+        delete[] _name;
+    }
+
     bool operator==(const jindex& left, const jindex& right)
     {
         const bool some_index_is_unset = left._index == -1 || right._index == -1;

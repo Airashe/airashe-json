@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <cstring>
+#include <string>
 
 #include "jtoken_type.hpp"
 #include "jtoken_value.hpp"
@@ -51,6 +52,18 @@ namespace airashe::json
          */
         const char* c_str() const;
 
+        /**
+         * Convert token to string.
+         * @return Returns token as a string value.
+         */
+        std::string to_string() const;
+
+        /**
+         * Get type of token.
+         * @return Returns type of token.
+         */
+        jtoken_type get_type() const;
+     
         friend jtoken jarray();
         friend jtoken jobject();
     };

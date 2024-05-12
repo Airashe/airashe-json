@@ -29,7 +29,7 @@ namespace airashe::json
          * @param type type of token.
          * @return 
          */
-        static jtoken_behaviour* get_behaviour(jtoken_type type)
+        static jtoken_behaviour* get_behaviour(jtoken_type const type)
         {
             if (_behaviours.contains(type))
 				return _behaviours[type];

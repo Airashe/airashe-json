@@ -26,6 +26,7 @@ namespace airashe::json
         void set_name(const char* value);
 
     public:
+        ~jindex();
         /**
          * @brief Empty index.
          */
@@ -68,6 +69,18 @@ namespace airashe::json
             set_name(jindex._name);
             return *this;
         }
+
+        /**
+         * @brief Get current name value.
+         * @return Current name value.
+         */
+        const char* get_name() const { return _name; }
+
+        /**
+         * @brief Get current index value.
+         * @return Current index value.
+         */
+        int get_index() const { return _index; }
 
         friend bool operator==(const jindex& left, const jindex& right);
         friend bool operator<(const jindex& left, const jindex& right);

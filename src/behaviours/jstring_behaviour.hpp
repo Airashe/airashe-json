@@ -49,5 +49,10 @@ namespace airashe::json
         {
             return value->string;
         }
+
+        std::string to_string(jtoken_value const* value) const override
+        {
+            return {value->string};
+        }
     };
 }

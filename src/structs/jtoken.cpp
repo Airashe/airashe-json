@@ -53,6 +53,16 @@ namespace airashe::json
         return jbehaviour_factory::get_behaviour(_type)->c_str(&_value);
     }
 
+    std::string jtoken::to_string() const
+    {
+        return jbehaviour_factory::get_behaviour(_type)->to_string(&_value);
+    }
+
+    jtoken_type jtoken::get_type() const
+    {
+        return _type;
+    }
+
     jtoken jarray()
     {
         auto array = jtoken();
@@ -60,7 +70,7 @@ namespace airashe::json
         return array;
     }
 
-    jtoken jarray(std::initializer_list<jtoken> childrens)
+    jtoken jarray(const std::initializer_list<jtoken> childrens)
     {
         auto array = jarray();
         const jtoken* children = childrens.begin();
@@ -78,7 +88,7 @@ namespace airashe::json
         return object;
     }
 
-    jtoken jobject(std::initializer_list<jproperty> childrens)
+    jtoken jobject(const std::initializer_list<jproperty> childrens)
     {
         auto object = jobject();
         const jproperty* children = childrens.begin();

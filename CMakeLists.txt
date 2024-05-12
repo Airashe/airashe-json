@@ -25,6 +25,7 @@ add_library(${AIRASHEJSON_PROJECT_NAME}
     src/structs/jtoken.hpp
     src/structs/jtoken_type.hpp
     src/structs/jtoken_value.hpp
+    src/structs/jindex.cpp
     src/structs/jindex.hpp
     
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
