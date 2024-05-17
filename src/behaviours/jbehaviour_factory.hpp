@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <map>
 
+#include "jarray_behaviour.hpp"
 #include "jcontainer_behaviour.hpp"
 #include "jstring_behaviour.hpp"
 
@@ -10,22 +11,22 @@ namespace airashe::json
     enum jtoken_type : unsigned char;
 
     /**
-     * Factory to get behaviour insances for tokens.
+     * @brief Factory to get behaviour instances for tokens.
      */
     class jbehaviour_factory final
     {
     private:
         /**
-         * Behaviour instances.
+         * @brief Behaviour instances.
          */
         inline static std::map<jtoken_type, jtoken_behaviour*> _behaviours = {
             {jtoken_string, new jstring_behaviour},
-            {jtoken_array, new jcontainer_behaviour},
+            {jtoken_array, new jarray_behaviour},
             {jtoken_object, new jcontainer_behaviour}
         };
     public:
         /**
-         * Get token behaviour based on token type.
+         * @brief Get token behaviour based on token type.
          * @param type type of token.
          * @return 
          */

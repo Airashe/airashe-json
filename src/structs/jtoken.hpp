@@ -57,13 +57,14 @@ namespace airashe::json
          * @return Returns token as a string value.
          */
         std::string to_string() const;
+        operator std::string() const { return to_string(); }
 
         /**
          * Get type of token.
          * @return Returns type of token.
          */
         jtoken_type get_type() const;
-     
+
         friend jtoken jarray();
         friend jtoken jobject();
     };

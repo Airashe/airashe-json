@@ -5,6 +5,9 @@
 
 namespace airashe::json
 {
+    /**
+     * @brief Behaviour for string tokens.
+     */
     class jstring_behaviour final : public jtoken_behaviour
     {
     public:
@@ -47,7 +50,14 @@ namespace airashe::json
 
         const char* c_str(jtoken_value const* value) const override
         {
-            return value->string;
+            if (value->string == nullptr)
+                return new char[] { '\0' };
+
+            size_t length = strlen(value->string);
+            char* result = new char[length + 1];
+            strcpy(result, value->string);
+            result[length] = '\0';
+            return result;
         }
 
         std::string to_string(jtoken_value const* value) const override

@@ -5,9 +5,24 @@
 
 namespace airashe::json
 {
-    class jcontainer_behaviour final : public jtoken_behaviour
+    /**
+     * @brief Basic behaviour for containers (aka arrays, objects).
+     */
+    class jcontainer_behaviour : public jtoken_behaviour
     {
+    protected:
+        /**
+         * @brief Start character of container.
+         */
+        char _start_char;
+        
+        /**
+         * @brief End character of container.
+         */
+        char _end_char;
     public:
+        jcontainer_behaviour() : jtoken_behaviour(), _start_char('{'), _end_char('}') { }
+        
         void cleanup(jtoken_value* value) const override { delete value->childrens; }
 
         void assign_value(jtoken_value* target, void const* source) const override
@@ -25,7 +40,7 @@ namespace airashe::json
                 delete target->childrens;
 
             target->childrens = new std::map<jindex, jtoken>();
-            const jtoken_value* src = (jtoken_value*)source;
+            jtoken_value const* src = (jtoken_value const*)source;
             for (int i = 0; i < src->childrens->size(); i++)
                 target->childrens->insert({i, src->childrens->at(i)});
         }
@@ -40,25 +55,30 @@ namespace airashe::json
             if (value == nullptr)
                 return "";
 
-            return to_string(value).c_str();
+            std::string string_value = to_string(value);
+            char* result_string = new char[string_value.length() + 1];
+            strcpy(result_string, string_value.c_str());
+            
+            return result_string;
         }
 
         std::string to_string(jtoken_value const* value) const override
         {
             if (value == nullptr)
                 return "";
-
-            bool is_array = true;
+            
             const size_t size = value->childrens == nullptr ? 0 : value->childrens->size();
+            size_t properties_size = 0;
             std::string* properties = new std::string[size];
             std::string* tokens = new std::string[size];
 
             size_t i = 0;
-            for (auto& [key, token] : *value->childrens)
+            if (size != 0)
+                for (auto& [key, token] : *value->childrens)
             {
                 if (key.get_name() != nullptr)
                 {
-                    is_array = false;
+                    properties_size++;
                     properties[i] = std::format("\"{0}\"", key.get_name());
                 }
 
@@ -71,17 +91,20 @@ namespace airashe::json
                 i++;
             }
 
-            std::string result = is_array ? "[" : "{";
+            std::string result;
+            result += _start_char;
+            bool include_props = properties_size == size;
+            
             for (i = 0; i < size; i++)
             {
-                if (!is_array)
+                if (include_props)
                     result += std::format("{0}: {1}", properties[i], tokens[i]);
                 else
                     result += std::format("{0}", tokens[i]);
                 if (i < size - 1)
                     result += ", ";
             }
-            result += is_array ? "]" : "}";
+            result += _end_char;
             delete[] properties;
             delete[] tokens;
             return result;

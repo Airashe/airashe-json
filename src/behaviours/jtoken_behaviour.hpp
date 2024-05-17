@@ -6,36 +6,39 @@ namespace airashe::json
     struct jindex;
 
     /**
-     * Interface for objects responsible for tokens behaviour in c++ code.
+     * @brief Interface for objects responsible for tokens behaviour in c++ code.
      */
     class jtoken_behaviour
     {
     public:
+        /**
+         * @brief Interface for objects responsible for tokens behaviour in c++ code.
+         */
         jtoken_behaviour() = default;
 
         virtual ~jtoken_behaviour() = default;
 
         /**
-         * Cleanup token.
+         * @brief Cleanup upon token destruction.
          */
         virtual void cleanup(jtoken_value* value) const = 0;
 
         /**
-         * Assign value from source to target JSON container.
+         * @brief Assign value from source to target JSON container.
          * @param target target JSON value container.
          * @param source source of value.
          */
         virtual void assign_value(jtoken_value* target, void const* source) const = 0;
 
         /**
-         * Copy value from one JSON container to another.
+         * @brief Copy value from one JSON container to another.
          * @param target target JSON value container.
          * @param source source JSON value container.
          */
         virtual void copy_value(jtoken_value* target, jtoken_value const* source) const = 0;
 
         /**
-          * Access element within value of token.
+          * @brief Access element within value of token.
           * @param value value of token.
           * @param index index of element.
           * @return reference to element.
@@ -43,14 +46,16 @@ namespace airashe::json
         virtual jtoken& at(jtoken_value* value, jindex index) const = 0;
 
         /**
-         * Convert value to string.
+         * @brief Convert value to string.
+         * String that returns is always <b>your responsibility</b>.
+         * 
          * @param value Value to convert.
          * @return Returns string representation of value.
          */
         virtual const char* c_str(jtoken_value const* value) const = 0;
 
         /**
-         * onvert value to string.
+         * @brief Convert value to string.
          * @param value Value to convert.
          * @return Returns string representation of value.
          */
