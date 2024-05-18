@@ -25,6 +25,10 @@ namespace airashe::json
          * Value of token. 
          */
         jtoken_value _value;
+        /**
+         * Value of last to string.
+         */
+        mutable std::string _lastStrVal;
 
     public:
         jtoken();
@@ -50,13 +54,13 @@ namespace airashe::json
          * Convert token to string.
          * @return Returns token as a string value.
          */
-        const char* c_str() const;
+        const char* c_str() const {return to_string().c_str(); }
 
         /**
          * Convert token to string.
          * @return Returns token as a string value.
          */
-        std::string to_string() const;
+        std::string& to_string() const;
         operator std::string() const { return to_string(); }
 
         /**

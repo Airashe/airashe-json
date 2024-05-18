@@ -48,18 +48,6 @@ namespace airashe::json
             throw std::logic_error("Can not extract jtoken from string.");
         }
 
-        const char* c_str(jtoken_value const* value) const override
-        {
-            if (value->string == nullptr)
-                return new char[] { '\0' };
-
-            size_t length = strlen(value->string);
-            char* result = new char[length + 1];
-            strcpy(result, value->string);
-            result[length] = '\0';
-            return result;
-        }
-
         std::string to_string(jtoken_value const* value) const override
         {
             return {value->string};

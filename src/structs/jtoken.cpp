@@ -48,14 +48,10 @@ namespace airashe::json
         return jbehaviour_factory::get_behaviour(_type)->at(&_value, index);
     }
 
-    const char* jtoken::c_str() const
+    std::string& jtoken::to_string() const
     {
-        return jbehaviour_factory::get_behaviour(_type)->c_str(&_value);
-    }
-
-    std::string jtoken::to_string() const
-    {
-        return jbehaviour_factory::get_behaviour(_type)->to_string(&_value);
+        _lastStrVal = jbehaviour_factory::get_behaviour(_type)->to_string(&_value);
+        return _lastStrVal;
     }
 
     jtoken_type jtoken::get_type() const

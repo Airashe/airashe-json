@@ -50,18 +50,6 @@ namespace airashe::json
             assign_value(target, source);
         }
 
-        const char* c_str(jtoken_value const* value) const override
-        {
-            if (value == nullptr)
-                return "";
-
-            std::string string_value = to_string(value);
-            char* result_string = new char[string_value.length() + 1];
-            strcpy(result_string, string_value.c_str());
-            
-            return result_string;
-        }
-
         std::string to_string(jtoken_value const* value) const override
         {
             if (value == nullptr)

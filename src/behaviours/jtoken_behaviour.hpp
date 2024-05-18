@@ -47,15 +47,6 @@ namespace airashe::json
 
         /**
          * @brief Convert value to string.
-         * String that returns is always <b>your responsibility</b>.
-         * 
-         * @param value Value to convert.
-         * @return Returns string representation of value.
-         */
-        virtual const char* c_str(jtoken_value const* value) const = 0;
-
-        /**
-         * @brief Convert value to string.
          * @param value Value to convert.
          * @return Returns string representation of value.
          */
