@@ -3,6 +3,8 @@
 #include "structs/jtoken.hpp"
 #include <format>
 
+#include "structs/jtoken_value.hpp"
+
 namespace airashe::json
 {
     /**
@@ -23,7 +25,7 @@ namespace airashe::json
     public:
         jcontainer_behaviour() : jtoken_behaviour(), _start_char('{'), _end_char('}') { }
         
-        void cleanup(jtoken_value* value) const override { delete value->childrens; }
+        void cleanup(jtoken_value* value) const override { delete value->value.childrens; }
 
         void assign_value(jtoken_value* target, void const* source) const override
         {
@@ -32,17 +34,20 @@ namespace airashe::json
 
             if (source == nullptr)
             {
-                target->childrens = new std::map<jindex, jtoken>();
+                target->value.childrens = new std::map<jindex, jtoken>();
+                target->modifiers = 0x0;
                 return;
             }
 
             if (target != nullptr)
-                delete target->childrens;
+                delete target->value.childrens;
 
-            target->childrens = new std::map<jindex, jtoken>();
+            target->value.childrens = new std::map<jindex, jtoken>();
             jtoken_value const* src = (jtoken_value const*)source;
-            for (int i = 0; i < src->childrens->size(); i++)
-                target->childrens->insert({i, src->childrens->at(i)});
+            for (int i = 0; i < src->value.childrens->size(); i++)
+                target->value.childrens->insert({i, src->value.childrens->at(i)});
+
+            target->modifiers = src->modifiers;
         }
 
         void copy_value(jtoken_value* target, jtoken_value const* source) const override
@@ -55,14 +60,14 @@ namespace airashe::json
             if (value == nullptr)
                 return "";
             
-            const size_t size = value->childrens == nullptr ? 0 : value->childrens->size();
+            const size_t size = value->value.childrens == nullptr ? 0 : value->value.childrens->size();
             size_t properties_size = 0;
             std::string* properties = new std::string[size];
             std::string* tokens = new std::string[size];
 
             size_t i = 0;
             if (size != 0)
-                for (auto& [key, token] : *value->childrens)
+                for (auto& [key, token] : *value->value.childrens)
             {
                 if (key.get_name() != nullptr)
                 {
@@ -100,15 +105,15 @@ namespace airashe::json
 
         jtoken& at(jtoken_value* value, const jindex index) const override
         {
-            if (value->childrens == nullptr)
-                value->childrens = new std::map<jindex, jtoken>();
+            if (value->value.childrens == nullptr)
+                value->value.childrens = new std::map<jindex, jtoken>();
 
-            for (auto& child : *value->childrens)
+            for (auto& child : *value->value.childrens)
                 if (child.first == index)
                     return child.second;
 
-            value->childrens->insert({index, jtoken()});
-            return value->childrens->at(index);
+            value->value.childrens->insert({index, jtoken()});
+            return value->value.childrens->at(index);
         }
     };
 }

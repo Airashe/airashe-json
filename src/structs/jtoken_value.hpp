@@ -1,30 +1,22 @@
 ﻿#pragma once
-#include <map>
+#include "jtoken_value_container.hpp"
 
 namespace airashe::json
 {
-    struct jtoken;
-    struct jindex;
-    
     /**
-     * Value of JSON token.
+     * @brief Value of JSON token.
      */
-    union jtoken_value
+    struct jtoken_value
     {
     public:
         /**
-         * String value.
+         * @brief Value.
          */
-        char* string;
+        jtoken_value_container value;
 
         /**
-         * Childrens of current token.
+         * @brif Modificators of value.
          */
-        std::map<jindex, jtoken>* childrens;
-
-        jtoken_value()
-        {
-            string = nullptr;
-        }
+        unsigned char modifiers;
     };
 }

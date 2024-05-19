@@ -2,7 +2,7 @@
 
 namespace airashe::json
 {
-    union jtoken_value;
+    struct jtoken_value;
     struct jindex;
 
     /**

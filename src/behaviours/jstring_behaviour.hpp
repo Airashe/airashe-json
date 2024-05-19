@@ -13,15 +13,16 @@ namespace airashe::json
     public:
         void cleanup(jtoken_value* value) const override
         {
-            delete[] value->string;
+            delete[] value->value.string;
         }
         
         void assign_value(jtoken_value* target, void const* source) const override
         {
             const char* src_char = (char const*)source;
             size_t length = strlen(src_char);
-            target->string = new char[length + 1];
-            strcpy(target->string, src_char);
+            target->value.string = new char[length + 1];
+            strcpy(target->value.string, src_char);
+            target->modifiers = 0x0;
         }
 
         void copy_value(jtoken_value* target, jtoken_value const* source) const override
@@ -29,18 +30,20 @@ namespace airashe::json
             if (target == source)
 				return;
 
-            if (source->string == nullptr)
+            if (source->value.string == nullptr)
             {
-				target->string = nullptr;
+				target->value.string = nullptr;
+                target->modifiers = 0x0;
                 return;
             }
 
-            if (target->string != nullptr)
-                delete[] target->string;
+            if (target->value.string != nullptr)
+                delete[] target->value.string;
 
-			size_t length = strlen(source->string);
-			target->string = new char[length + 1];
-			strcpy(target->string, source->string);
+			size_t length = strlen(source->value.string);
+			target->value.string = new char[length + 1];
+			strcpy(target->value.string, source->value.string);
+            target->modifiers = source->modifiers;
         }
 
         jtoken& at(jtoken_value* value, const jindex index) const override
@@ -50,7 +53,7 @@ namespace airashe::json
 
         std::string to_string(jtoken_value const* value) const override
         {
-            return {value->string};
+            return {value->value.string};
         }
     };
 }

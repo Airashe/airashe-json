@@ -10,7 +10,8 @@ namespace airashe::json
     jtoken::jtoken()
     {
         _type = jtoken_err;
-        _value.string = nullptr;
+        _value.value.string = nullptr;
+        _value.modifiers = 0x0;
     }
 
     jtoken::jtoken(const jtoken& other)
