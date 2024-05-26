@@ -3,27 +3,32 @@
 namespace airashe::json
 {
     /**
-     * Type of JSON token.
+     * @brief Type of JSON token.
      */
     enum jtoken_type : unsigned char
     {
         /**
-         * String.
+         * @brief String.
          */
         jtoken_string = 0x1,
 
         /**
-         * Array.
+         * @brief Array.
          */
         jtoken_array = 0x2,
 
         /**
-         * Object.
+         * @brief Object.
          */
-        jtoken_object = 0x4, 
+        jtoken_object = 0x4,
 
         /**
-         * Invalid token.
+         * @brief Number.
+         */
+        jtoken_number = 0x8, 
+     
+        /**
+         * @brief Invalid token.
          */
         jtoken_err = 0xFF, 
     };

@@ -25,7 +25,12 @@ namespace airashe::json
     public:
         jcontainer_behaviour() : jtoken_behaviour(), _start_char('{'), _end_char('}') { }
         
-        void cleanup(jtoken_value* value) const override { delete value->value.childrens; }
+        void cleanup(jtoken_value* value) const override
+        {
+            delete value->value.childrens;
+            value->modifiers = jmod_none;
+            value->value.string = nullptr;
+        }
 
         void assign_value(jtoken_value* target, void const* source) const override
         {
@@ -35,7 +40,7 @@ namespace airashe::json
             if (source == nullptr)
             {
                 target->value.childrens = new std::map<jindex, jtoken>();
-                target->modifiers = 0x0;
+                target->modifiers = jmod_none;
                 return;
             }
 
@@ -115,5 +120,15 @@ namespace airashe::json
             value->value.childrens->insert({index, jtoken()});
             return value->value.childrens->at(index);
         }
+
+        long long to_ll(const jtoken_value* value) const override { return 0; }
+
+        unsigned long long to_ull(const jtoken_value* value) const override { return 0; }
+
+        float to_f(const jtoken_value* value) const override { return 0; }
+
+        double to_d(const jtoken_value* value) const override { return 0; }
+
+        long double to_ld(const jtoken_value* value) const override { return 0; }
     };
 }

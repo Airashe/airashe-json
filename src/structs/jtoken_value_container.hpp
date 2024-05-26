@@ -16,6 +16,16 @@ namespace airashe::json
          * String value.
          */
         char* string;
+        
+        /**
+         * Number as integer value.
+         */
+        long long int int_number;
+
+        /**
+         * Number as float value.
+         */
+        long double float_number;
 
         /**
          * Childrens of current token.

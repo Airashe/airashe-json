@@ -41,6 +41,32 @@ namespace airashe::json
          * @param string value of token.
          */
         jtoken(const char* string);
+        /**
+         * Initialize number token.
+         * @param number integer value of token.
+         */
+        jtoken(long long int number);
+        /**
+         * Initialize number token.
+         * @param number integer value of token.
+         */
+        jtoken(unsigned long long int number);
+
+        /**
+         * Initialize number token.
+         * @param number float value of token.
+         */
+        jtoken(float number);
+        /**
+         * Initialize number token.
+         * @param number double value of token.
+         */
+        jtoken(double number);
+        /**
+         * Initialize number token.
+         * @param number long double value of token.
+         */
+        jtoken(long double number);
 
         /**
          * Get child token within container.
@@ -48,13 +74,15 @@ namespace airashe::json
          * @return Child token.
          */
         jtoken& at(jindex index);
-        jtoken& operator[](jindex index) { return at(index); }
+        jtoken& operator[](const char* index) { return at(index); }
+        jtoken& operator[](int index) { return at(index); }
 
         /**
          * Convert token to string.
          * @return Returns token as a string value.
          */
-        const char* c_str() const {return to_string().c_str(); }
+        const char* c_str() const { return to_string().c_str(); }
+        operator const char*() const { return c_str(); }
 
         /**
          * Convert token to string.
@@ -62,6 +90,46 @@ namespace airashe::json
          */
         std::string& to_string() const;
         operator std::string() const { return to_string(); }
+
+        /**
+         * Convert token to long long integer.
+         * @return Value of token.
+         */
+        long long int to_ll() const;
+        operator long long int() const { return to_ll(); }
+
+        /**
+         * Convert token to unsigned long long integer.
+         * @return Value of token.
+         */
+        unsigned long long int to_ull() const;
+        operator unsigned long long int() const { return to_ull(); }
+
+        long int to_l() const;
+        operator long int() const { return to_l(); }
+
+        unsigned long int to_ul() const;
+        operator unsigned long int() const { return to_ul(); }
+
+        /**
+         * Convert token to float.
+         * @return Value of token.
+         */
+        float to_f() const;
+        operator float() const { return to_f(); }
+
+        /**
+         * Convert token to double.
+         * @return Value of token.
+         */
+        double to_d() const;
+        operator double() const { return to_d(); }
+
+        /**
+         * Convert token to long double.
+         * @return Value of token.
+         */
+        long double to_ld() const;
 
         /**
          * Get type of token.

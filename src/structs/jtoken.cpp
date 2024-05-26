@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "jmodifiers.hpp"
 #include "jproperty.hpp"
 #include "behaviours/jbehaviour_factory.hpp"
 
@@ -11,7 +12,7 @@ namespace airashe::json
     {
         _type = jtoken_err;
         _value.value.string = nullptr;
-        _value.modifiers = 0x0;
+        _value.modifiers = jmod_none;
     }
 
     jtoken::jtoken(const jtoken& other)
@@ -26,6 +27,8 @@ namespace airashe::json
         if (this == &other)
             return *this;
 
+        if(_type != jtoken_err && _type != other._type)
+            jbehaviour_factory::get_behaviour(_type)->cleanup(&_value);
         _type = other._type;
         if (_type != jtoken_err)
             jbehaviour_factory::get_behaviour(_type)->copy_value(&_value, &other._value);
@@ -40,8 +43,43 @@ namespace airashe::json
 
     jtoken::jtoken(const char* string)
     {
-        _type = jtoken_type::jtoken_string;
+        _type = jtoken_string;
         jbehaviour_factory::get_behaviour(_type)->assign_value(&_value, string);
+    }
+
+    jtoken::jtoken(long long int number)
+    {
+        _type = jtoken_number;
+        _value.modifiers = jmod_number_integer;
+        jbehaviour_factory::get_behaviour(_type)->assign_value(&_value, &number);
+    }
+
+    jtoken::jtoken(unsigned long long int number)
+    {
+        _type = jtoken_number;
+        _value.modifiers = jmod_number_integer & jmod_number_unsigned;
+        jbehaviour_factory::get_behaviour(_type)->assign_value(&_value, &number);
+    }
+
+    jtoken::jtoken(float number)
+    {
+        _type = jtoken_number;
+        _value.modifiers = jmod_number_float;
+        jbehaviour_factory::get_behaviour(_type)->assign_value(&_value, &number);
+    }
+
+    jtoken::jtoken(double number)
+    {
+        _type = jtoken_number;
+        _value.modifiers = jmod_number_double;
+        jbehaviour_factory::get_behaviour(_type)->assign_value(&_value, &number);
+    }
+
+    jtoken::jtoken(long double number)
+    {
+        _type = jtoken_number;
+        _value.modifiers = jmod_number_longdouble;
+        jbehaviour_factory::get_behaviour(_type)->assign_value(&_value, &number);
     }
 
     jtoken& jtoken::at(const jindex index)
@@ -53,6 +91,41 @@ namespace airashe::json
     {
         _lastStrVal = jbehaviour_factory::get_behaviour(_type)->to_string(&_value);
         return _lastStrVal;
+    }
+
+    long long int jtoken::to_ll() const
+    {
+        return jbehaviour_factory::get_behaviour(_type)->to_ll(&_value);
+    }
+
+    unsigned long long int jtoken::to_ull() const
+    {
+        return jbehaviour_factory::get_behaviour(_type)->to_ull(&_value);
+    }
+
+    long int jtoken::to_l() const
+    {
+        return jbehaviour_factory::get_behaviour(_type)->to_l(&_value);
+    }
+
+    unsigned long int jtoken::to_ul() const
+    {
+        return jbehaviour_factory::get_behaviour(_type)->to_ul(&_value);
+    }
+
+    float jtoken::to_f() const
+    {
+        return jbehaviour_factory::get_behaviour(_type)->to_f(&_value);
+    }
+
+    double jtoken::to_d() const
+    {
+        return jbehaviour_factory::get_behaviour(_type)->to_d(&_value);
+    }
+
+    long double jtoken::to_ld() const
+    {
+        return jbehaviour_factory::get_behaviour(_type)->to_ld(&_value);
     }
 
     jtoken_type jtoken::get_type() const
@@ -90,7 +163,7 @@ namespace airashe::json
         auto object = jobject();
         const jproperty* children = childrens.begin();
         for(auto& property : childrens)
-            object[property.key] = property.value;
+            object.at(property.key) = property.value;
 
         return object;
     }

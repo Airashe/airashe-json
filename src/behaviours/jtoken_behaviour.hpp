@@ -43,7 +43,10 @@ namespace airashe::json
           * @param index index of element.
           * @return reference to element.
           */
-        virtual jtoken& at(jtoken_value* value, jindex index) const = 0;
+        virtual jtoken& at(jtoken_value* value, jindex index) const
+        {
+            throw std::logic_error("Not implemented");
+        }
 
         /**
          * @brief Convert value to string.
@@ -51,5 +54,53 @@ namespace airashe::json
          * @return Returns string representation of value.
          */
         virtual std::string to_string(jtoken_value const* value) const = 0;
+
+        /**
+         * @brief Convert value to long long integer.
+         * @param value Value to extract.
+         * @return Value as long long integer.
+         */
+        virtual long long int to_ll(jtoken_value const* value) const = 0;
+
+        /**
+         * @brief Convert value to unsigned long long integer.
+         * @param value Value of token.
+         * @return Return unsigned long long integer.
+         */
+        virtual unsigned long long int to_ull(jtoken_value const* value) const = 0;
+
+        /**
+         * @brief Convert value to long long integer.
+         * @param value Value to extract.
+         * @return Value as long long integer.
+         */
+        virtual long int to_l(jtoken_value const* value) const = 0;
+
+        /**
+         * @brief Convert value to unsigned long long integer.
+         * @param value Value of token.
+         * @return Return unsigned long long integer.
+         */
+        virtual unsigned long int to_ul(jtoken_value const* value) const = 0;
+
+        /**
+         * @brief Convert value to float.
+         * @param value Value to extract.
+         * @return Value as float.
+         */
+        virtual float to_f(jtoken_value const* value) const = 0;
+        /**
+         * @brief Convert value to double.
+         * @param value Value to extract.
+         * @return Value as double.
+         */
+        virtual double to_d(jtoken_value const* value) const = 0;
+
+        /**
+         * @brief Convert value to long double.
+         * @param value Value to extract.
+         * @return Value as long double.
+         */
+        virtual long double to_ld(jtoken_value const* value) const = 0;
     };
 }
