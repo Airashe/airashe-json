@@ -12,6 +12,23 @@ namespace airashe::json
      */
     class jnumber_behaviour final : public jtoken_behaviour
     {
+    private:
+        bool is_integer(const jtoken_value* value) const
+        {
+            return in_mask(value, jmod_number_integer | jmod_number_long | jmod_number_long_long | jmod_number_char | jmod_number_short);
+        }
+        bool is_decimal(const jtoken_value* value) const
+        {
+            return in_mask(value, jmod_number_float | jmod_number_double | jmod_number_longdouble);
+        }
+        
+        template<typename T>
+        T to_appropriate_integer(const jtoken_value* value) const
+        {
+            if (is_integer(value))
+                return static_cast<T>(value->value.int_number);
+            return static_cast<T>(value->value.float_number);
+        }
     public:
         void cleanup(jtoken_value* value) const override
         {
@@ -27,24 +44,24 @@ namespace airashe::json
                 target->value.int_number = 0;
                 return;
             }
-            
-            if ((target->modifiers | jmod_number_integer) == target->modifiers)
+
+            if (is_integer(target))
             {
                 target->value.int_number = *(long long int const*)source;
                 return;
             }
             
-            if ((target->modifiers | jmod_number_float) == target->modifiers)
+            if (has_flag(target, jmod_number_float))
             {
                 target->value.float_number = static_cast<long double>(*(float const*)source);
             }
 
-            if ((target->modifiers | jmod_number_double) == target->modifiers)
+            if (has_flag(target, jmod_number_double))
             {
                 target->value.float_number = static_cast<long double>(*(double const*)source);
             }
 
-            if ((target->modifiers | jmod_number_longdouble) == target->modifiers)
+            if (has_flag(target, jmod_number_longdouble))
             {
                 target->value.float_number = *(long double const*)source;
             }
@@ -60,12 +77,13 @@ namespace airashe::json
             }
             
             target->modifiers = source->modifiers;
-            if ((source->modifiers | jmod_number_integer) == source->modifiers)
+            if (is_integer(source))
             {
                 target->value.int_number = source->value.int_number;
                 return;
             }
-            if ((source->modifiers & (jmod_number_float | jmod_number_double | jmod_number_longdouble)) != 0)
+            
+            if (is_decimal(source))
             {
                 target->value.float_number = source->value.float_number;
             }
@@ -75,14 +93,31 @@ namespace airashe::json
         {
             if (value == nullptr)
                 return std::to_string(0);
-            if ((value->modifiers | jmod_number_integer) == value->modifiers)
+            if (is_integer(value))
             {
-                if ((value->modifiers | jmod_number_unsigned) == value->modifiers)
+                if (has_flag(value, jmod_number_unsigned))
                 {
-                    unsigned long long int unsigned_value = *(unsigned long long int*)&value->value.int_number;
-                    return std::to_string(unsigned_value);
+                    if (has_flag(value, jmod_number_integer))
+                        return std::to_string(*(unsigned int*)&value->value.int_number);
+                    if(has_flag(value, jmod_number_char))
+                        return std::to_string(*(unsigned char*)&value->value.int_number);
+                    if (has_flag(value, jmod_number_short))
+                        return std::to_string(*(unsigned short*)&value->value.int_number);
+                    if (has_flag(value, jmod_number_long))
+                        return std::to_string(*(unsigned long*)&value->value.int_number);
+                    if (has_flag(value, jmod_number_long_long))
+                        return std::to_string(*(unsigned long long*)&value->value.int_number);
                 }
-                return std::to_string(value->value.int_number);
+                if (has_flag(value, jmod_number_integer))
+                    return std::to_string(*(int*)&value->value.int_number);
+                if(has_flag(value, jmod_number_char))
+                    return std::to_string(*(char*)&value->value.int_number);
+                if (has_flag(value, jmod_number_short))
+                    return std::to_string(*(short*)&value->value.int_number);
+                if (has_flag(value, jmod_number_long))
+                    return std::to_string(*(long*)&value->value.int_number);
+                if (has_flag(value, jmod_number_long_long))
+                    return std::to_string(*(long long*)&value->value.int_number);
             }
 
             auto value_str = std::to_string(value->value.float_number);
@@ -97,74 +132,68 @@ namespace airashe::json
 
         long long to_ll(const jtoken_value* value) const override
         {
-            if ((value->modifiers | jmod_number_integer) == value->modifiers)
-            {
-                if ((value->modifiers | jmod_number_unsigned) == value->modifiers)
-                {
-                    unsigned long long int unsigned_value = *(unsigned long long int*)&value->value.int_number;
-                    return static_cast<long long>(unsigned_value);
-                }
-                return value->value.int_number;
-            }
-            
-            return static_cast<long long>(value->value.float_number);
+            return to_appropriate_integer<long long>(value);
         }
 
         unsigned long long to_ull(const jtoken_value* value) const override
         {
-            if ((value->modifiers | jmod_number_integer) == value->modifiers)
-            {
-                if ((value->modifiers | jmod_number_unsigned) == value->modifiers)
-                {
-                    unsigned long long int unsigned_value = *(unsigned long long int*)&value->value.int_number;
-                    return unsigned_value;
-                }
-                return static_cast<unsigned long long>(value->value.int_number);
-            }
-            
-            return static_cast<unsigned long long>(value->value.float_number);
+            return to_appropriate_integer<unsigned long long>(value);
         }
 
         long int to_l(const jtoken_value* value) const override
         {
-            if ((value->modifiers | jmod_number_integer) == value->modifiers)
-                return static_cast<long>(value->value.int_number);
-            
-            return static_cast<long>(value->value.float_number);
+            return to_appropriate_integer<long int>(value);
+        }
+
+        unsigned long to_ul(const jtoken_value* value) const override
+        {
+            return to_appropriate_integer<unsigned long int>(value);
+        }
+
+        int to_i(const jtoken_value* value) const override
+        {
+            return to_appropriate_integer<int>(value);
+        }
+
+        unsigned int to_ui(const jtoken_value* value) const override
+        {
+            return to_appropriate_integer<unsigned int>(value);
+        }
+
+        
+        short int to_s(const jtoken_value* value) const override
+        {
+            return to_appropriate_integer<short int>(value);
+        }
+        
+        unsigned short int to_us(const jtoken_value* value) const override
+        {
+            return to_appropriate_integer<unsigned short int>(value);
+        }
+        
+        char to_c(const jtoken_value* value) const override
+        {
+            return to_appropriate_integer<char>(value);
+        }
+
+        unsigned char to_uc(const jtoken_value* value) const override
+        {
+            return to_appropriate_integer<unsigned char>(value);
         }
         
         float to_f(const jtoken_value* value) const override
         {
-            if ((value->modifiers | jmod_number_integer) == value->modifiers)
-                return static_cast<float>(value->value.int_number);
-            
-            long double max = std::numeric_limits<float>::max();
-            long double min = std::numeric_limits<float>::min();
-            if (value->value.float_number > max || value->value.float_number < min)
-                return 0;
-            
-            return static_cast<float>(value->value.float_number);
+            return to_appropriate_integer<float>(value);
         }
         
         double to_d(const jtoken_value* value) const override
         {
-            if ((value->modifiers | jmod_number_integer) == value->modifiers)
-                return static_cast<double>(value->value.int_number);
-
-            long double max = std::numeric_limits<float>::max();
-            long double min = std::numeric_limits<float>::min();
-            if (value->value.float_number > max || value->value.float_number < min)
-                return 0;
-            
-            return static_cast<double>(value->value.float_number);
+            return to_appropriate_integer<double>(value);
         }
         
         long double to_ld(const jtoken_value* value) const override
         {
-            if ((value->modifiers | jmod_number_integer) == value->modifiers)
-                return static_cast<long double>(value->value.int_number);
-
-            return value->value.float_number;
+            return to_appropriate_integer<long double>(value);
         }
     };
 }

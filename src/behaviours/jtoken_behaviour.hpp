@@ -10,6 +10,17 @@ namespace airashe::json
      */
     class jtoken_behaviour
     {
+    protected:
+        bool has_flag(const jtoken_value* value, jmodifiers flag) const
+        {
+            return (value->modifiers | flag) == value->modifiers;
+        }
+
+        bool in_mask(const jtoken_value* value, int mask) const
+        {
+            return (value->modifiers & mask) > 0;
+        }
+
     public:
         /**
          * @brief Interface for objects responsible for tokens behaviour in c++ code.
@@ -82,6 +93,48 @@ namespace airashe::json
          * @return Return unsigned long long integer.
          */
         virtual unsigned long int to_ul(jtoken_value const* value) const = 0;
+
+        /**
+         * @brief Convert value to integer.
+         * @param value Value to extract.
+         * @return Value as integer.
+         */
+        virtual int to_i(jtoken_value const* value) const = 0;
+
+        /**
+         * @brief Convert value to unsigned integer.
+         * @param value Value of token.
+         * @return Return unsigned integer.
+         */
+        virtual unsigned int to_ui(jtoken_value const* value) const = 0;
+
+        /**
+         * @brief Convert value to short integer.
+         * @param value Value to extract.
+         * @return Value as short integer.
+         */
+        virtual short to_s(jtoken_value const* value) const = 0;
+
+        /**
+         * @brief Convert value to unsigned short integer.
+         * @param value Value of token.
+         * @return Return unsigned short integer.
+         */
+        virtual unsigned short to_us(jtoken_value const* value) const = 0;
+     
+        /**
+         * @brief Convert value to char.
+         * @param value Value to extract.
+         * @return Value as char.
+         */
+        virtual char to_c(jtoken_value const* value) const = 0;
+
+        /**
+         * @brief Convert value to unsigned char.
+         * @param value Value of token.
+         * @return Return unsigned char.
+         */
+        virtual unsigned char to_uc(jtoken_value const* value) const = 0;
 
         /**
          * @brief Convert value to float.

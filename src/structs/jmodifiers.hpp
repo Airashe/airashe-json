@@ -5,7 +5,7 @@ namespace airashe::json
     /**
      * Modificators for json values.
      */
-    enum jmodifiers : unsigned char
+    enum jmodifiers : unsigned short
     {
         /**
          * No modifiers applied.
@@ -28,13 +28,33 @@ namespace airashe::json
         jmod_number_integer = 0x4,
 
         /**
+         * Long number.
+         */
+        jmod_number_long = 0x8,
+
+        /**
+         * Long long number.
+         */
+        jmod_number_long_long = 0x10,
+
+        /**
+         * Short number.
+         */
+        jmod_number_short = 0x20,
+
+        /**
+         * Char number.
+         */
+        jmod_number_char = 0x40,
+
+        /**
          * Number is double.
          */
-        jmod_number_double = 0x8,
+        jmod_number_double = 0x80,
 
         /**
          * Number is long double
          */
-        jmod_number_longdouble = 0x10,
+        jmod_number_longdouble = 0x100,
     };
 }

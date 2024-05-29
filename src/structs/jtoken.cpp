@@ -50,14 +50,28 @@ namespace airashe::json
     jtoken::jtoken(long long int number)
     {
         _type = jtoken_number;
-        _value.modifiers = jmod_number_integer;
+        _value.modifiers = jmod_number_long_long;
         jbehaviour_factory::get_behaviour(_type)->assign_value(&_value, &number);
     }
 
     jtoken::jtoken(unsigned long long int number)
     {
         _type = jtoken_number;
-        _value.modifiers = jmod_number_integer & jmod_number_unsigned;
+        _value.modifiers = jmod_number_long_long & jmod_number_unsigned;
+        jbehaviour_factory::get_behaviour(_type)->assign_value(&_value, &number);
+    }
+
+    jtoken::jtoken(long int number)
+    {
+        _type = jtoken_number;
+        _value.modifiers = jmod_number_long;
+        jbehaviour_factory::get_behaviour(_type)->assign_value(&_value, &number);
+    }
+
+    jtoken::jtoken(unsigned long int number)
+    {
+        _type = jtoken_number;
+        _value.modifiers = jmod_number_long & jmod_number_unsigned;
         jbehaviour_factory::get_behaviour(_type)->assign_value(&_value, &number);
     }
 
@@ -111,6 +125,36 @@ namespace airashe::json
     unsigned long int jtoken::to_ul() const
     {
         return jbehaviour_factory::get_behaviour(_type)->to_ul(&_value);
+    }
+
+    int jtoken::to_i() const
+    {
+        return jbehaviour_factory::get_behaviour(_type)->to_i(&_value);
+    }
+
+    short jtoken::to_s() const
+    {
+        return jbehaviour_factory::get_behaviour(_type)->to_s(&_value);
+    }
+
+    unsigned short jtoken::to_us() const
+    {
+        return jbehaviour_factory::get_behaviour(_type)->to_us(&_value);
+    }
+
+    char jtoken::to_c() const
+    {
+        return jbehaviour_factory::get_behaviour(_type)->to_c(&_value);
+    }
+
+    unsigned char jtoken::to_uc() const
+    {
+        return jbehaviour_factory::get_behaviour(_type)->to_uc(&_value);
+    }
+
+    unsigned int jtoken::to_ui() const
+    {
+        return jbehaviour_factory::get_behaviour(_type)->to_ui(&_value);
     }
 
     float jtoken::to_f() const

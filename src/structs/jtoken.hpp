@@ -51,6 +51,16 @@ namespace airashe::json
          * @param number integer value of token.
          */
         jtoken(unsigned long long int number);
+        /**
+         * Initialize number token.
+         * @param number integer value of token.
+         */
+        jtoken(long int number);
+        /**
+         * Initialize number token.
+         * @param number integer value of token.
+         */
+        jtoken(unsigned long int number);
 
         /**
          * Initialize number token.
@@ -105,11 +115,45 @@ namespace airashe::json
         unsigned long long int to_ull() const;
         operator unsigned long long int() const { return to_ull(); }
 
+        /**
+         * Convert token to long.
+         * @return Value of token.
+         */
         long int to_l() const;
         operator long int() const { return to_l(); }
 
+        /**
+         * Convert token to unsigned long.
+         * @return Value of token.
+         */
         unsigned long int to_ul() const;
         operator unsigned long int() const { return to_ul(); }
+
+        /**
+         * Convert token to integer.
+         * @return Value of token.
+         */
+        int to_i() const;
+        operator int() const { return to_i(); }
+
+        short to_s() const;
+        operator short() const { return to_s(); }
+
+        unsigned short to_us() const;
+        operator unsigned short() const { return to_us(); }
+
+        char to_c() const;
+        operator char() const { return to_c(); }
+
+        unsigned char to_uc() const;
+        operator unsigned char() const { return to_uc(); }
+
+        /**
+         * Convert token to unsigned integer.
+         * @return Value of token.
+         */
+        unsigned int to_ui() const;
+        operator unsigned int() const { return to_ui(); }
 
         /**
          * Convert token to float.

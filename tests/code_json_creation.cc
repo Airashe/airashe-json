@@ -95,22 +95,31 @@ TEST(JSON, CreateObject)
 	}
 }
 
-TEST(ValuesConvertion, ToNumbers)
+TEST(ValueConvertion, ToNumbers)
 {
 	jtoken str_val = "5";
 	long long int val = str_val;
+	long long int val_e = 5;
 	ASSERT_EQ(val, 5);
 
+	unsigned long long int val2_e = 18446744073709551615ull;
+	val_e = static_cast<long long int>(val2_e);
 	jtoken str_overflow = "18446744073709551615";
 	val = str_overflow;
-	ASSERT_EQ(val, 0);
+	ASSERT_EQ(val, val_e);
 
 	unsigned long long int val2 = str_overflow;
-	ASSERT_EQ(val2, 18446744073709551615);
+	ASSERT_EQ(val2, val2_e);
 
 	jtoken float_val = "5.5";
 	float val3 = float_val;
-	ASSERT_EQ(val3, 5.5);
+	float val3_e = 5.5;
+	ASSERT_EQ(val3, val3_e);
+
+	str_overflow = -1l;
+	unsigned long t2 = str_overflow;
+	unsigned long t3 = -1l;
+	ASSERT_EQ(t2, t3);
 }
 
 TEST(ValueConvertion, ToStrings)
@@ -140,6 +149,44 @@ TEST(ValueConvertion, ToStrings)
 	val3 = token.to_string();
 	ASSERT_STREQ(val3.c_str(), "5.25");
 	ASSERT_EQ(token.to_ld(), 5.25);
+	
+	token = 5l;
+	val3 = token.to_string();
+	ASSERT_STREQ(val3.c_str(), "5");
+}
 
-	token = 5;
+TEST(ValueConvertion, StringToNumbers)
+{
+	jtoken token = "-5";
+	unsigned long long int val = token;
+	unsigned long long int val_e = -5;
+	ASSERT_EQ(val, val_e);
+
+	long long int val2 = token;
+	long long int val2_e = -5;
+	ASSERT_EQ(val2, val2_e);
+
+	token = "5.5";
+	float val3 = token;
+	float val3_e = 5.5;
+	ASSERT_EQ(val3, val3_e);
+
+	int val4 = token;
+	int val4_e = 5;
+	ASSERT_EQ(val4, val4_e);
+
+	token = "5";
+	double val5 = token;
+	double val5_e = 5.0;
+	ASSERT_EQ(val5, val5_e);
+
+	token = "0xFF";
+	unsigned char val6 = token;
+	unsigned char val6_e = 0xFF;
+	ASSERT_EQ(val6, val6_e);
+
+	token = "9";
+	char val7 = token;
+	char val7_e = '9';
+	ASSERT_EQ(val7, val7_e);
 }

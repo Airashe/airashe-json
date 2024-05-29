@@ -125,6 +125,22 @@ namespace airashe::json
 
         unsigned long long to_ull(const jtoken_value* value) const override { return 0; }
 
+        long to_l(const jtoken_value* value) const override { return 0;}
+        
+        unsigned long to_ul(const jtoken_value* value) const override { return 0; }
+
+        int to_i(const jtoken_value* value) const override { return 0; }
+        
+        unsigned int to_ui(const jtoken_value* value) const override { return 0; }
+
+        short to_s(const jtoken_value* value) const override { return 0; }
+        
+        unsigned short to_us(const jtoken_value* value) const override { return 0; }
+
+        char to_c(const jtoken_value* value) const override { return 0; }
+
+        unsigned char to_uc(const jtoken_value* value) const override { return 0; }
+        
         float to_f(const jtoken_value* value) const override { return 0; }
 
         double to_d(const jtoken_value* value) const override { return 0; }

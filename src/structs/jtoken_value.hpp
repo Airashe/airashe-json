@@ -17,6 +17,6 @@ namespace airashe::json
         /**
          * @brif Modificators of value.
          */
-        unsigned char modifiers;
+        unsigned short modifiers;
     };
 }
