@@ -22,6 +22,10 @@ namespace airashe::json
          */
         jtoken_type _type;
         /**
+         * Behaviour of token.
+         */
+        jtoken_behaviour* _behaviour;
+        /**
          * Value of token. 
          */
         jtoken_value _value;
@@ -29,54 +33,30 @@ namespace airashe::json
          * Value of last to string.
          */
         mutable std::string _lastStrVal;
-
+     
     public:
         jtoken();
         jtoken(const jtoken& other);
         jtoken& operator=(const jtoken& other);
         ~jtoken();
-
-        /**
-         * Initialize string token.
-         * @param string value of token.
-         */
+        
         jtoken(const char* string);
-        /**
-         * Initialize number token.
-         * @param number integer value of token.
-         */
         jtoken(long long int number);
-        /**
-         * Initialize number token.
-         * @param number integer value of token.
-         */
         jtoken(unsigned long long int number);
-        /**
-         * Initialize number token.
-         * @param number integer value of token.
-         */
         jtoken(long int number);
-        /**
-         * Initialize number token.
-         * @param number integer value of token.
-         */
         jtoken(unsigned long int number);
-
-        /**
-         * Initialize number token.
-         * @param number float value of token.
-         */
+        jtoken(int number);
+        jtoken(unsigned int number);
+        jtoken(short number);
+        jtoken(unsigned short number);
+        jtoken(char number);
+        jtoken(unsigned char number);
+     
         jtoken(float number);
-        /**
-         * Initialize number token.
-         * @param number double value of token.
-         */
         jtoken(double number);
-        /**
-         * Initialize number token.
-         * @param number long double value of token.
-         */
         jtoken(long double number);
+
+        jtoken(bool boolean);
 
         /**
          * Get child token within container.
@@ -174,12 +154,26 @@ namespace airashe::json
          * @return Value of token.
          */
         long double to_ld() const;
+        operator long double() const { return to_ld(); }
+
+        /**
+         * Convert token to logical value.
+         * @return Return value of a token as boolean.
+         */
+        bool to_bool() const;
+        operator bool() const { return to_bool(); }
 
         /**
          * Get type of token.
          * @return Returns type of token.
          */
-        jtoken_type get_type() const;
+        jtoken_type get_type() const { return _type; }
+
+        /**
+         * Set type of token.
+         * @param type Type of token.
+         */
+        void set_type(jtoken_type type);
 
         friend jtoken jarray();
         friend jtoken jobject();

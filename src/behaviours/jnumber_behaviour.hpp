@@ -47,7 +47,47 @@ namespace airashe::json
 
             if (is_integer(target))
             {
-                target->value.int_number = *(long long int const*)source;
+                if (has_flag(target, jmod_number_char))
+                {
+                    target->value.int_number = *(char const*)source;
+                    if (has_flag(target, jmod_number_unsigned))
+                    {
+                        target->value.int_number = *(unsigned char const*)source;
+                    }
+                }
+                if (has_flag(target, jmod_number_short))
+                {
+					target->value.int_number = *(short const*)source;
+					if (has_flag(target, jmod_number_unsigned))
+					{
+						target->value.int_number = *(unsigned short const*)source;
+					}
+                }
+                if (has_flag(target, jmod_number_integer))
+                {
+					target->value.int_number = *(int const*)source;
+					if (has_flag(target, jmod_number_unsigned))
+					{
+						target->value.int_number = *(unsigned int const*)source;
+					}
+                }
+                if (has_flag(target, jmod_number_long))
+                {
+					target->value.int_number = *(long const*)source;
+					if (has_flag(target, jmod_number_unsigned))
+					{
+						target->value.int_number = *(unsigned long const*)source;
+					}
+                }
+                if (has_flag(target, jmod_number_long_long))
+                {
+					target->value.int_number = *(long long const*)source;
+					if (has_flag(target, jmod_number_unsigned))
+					{
+						target->value.int_number = *(unsigned long long const*)source;
+					}
+                }
+
                 return;
             }
             
@@ -194,6 +234,20 @@ namespace airashe::json
         long double to_ld(const jtoken_value* value) const override
         {
             return to_appropriate_integer<long double>(value);
+        }
+
+        bool to_bool(jtoken_value const* value) const override
+        {
+            if (is_integer(value))
+            {
+                if(has_flag(value, jmod_number_unsigned))
+                    return static_cast<bool>(to_appropriate_integer<unsigned long long int>(value));
+                auto test = (to_appropriate_integer<long long int>(value));
+                return static_cast<bool>(test);
+            }
+            if (is_decimal(value))
+                return static_cast<bool>(to_appropriate_integer<long double>(value)) != 0;
+            return false;
         }
     };
 }

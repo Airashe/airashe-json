@@ -190,3 +190,84 @@ TEST(ValueConvertion, StringToNumbers)
 	char val7_e = '9';
 	ASSERT_EQ(val7, val7_e);
 }
+
+TEST(ValueConvertion, Booleans)
+{
+	jtoken test = true;
+	bool test_v = test;
+	bool test_e = true;
+	ASSERT_EQ(test_v, test_e);
+	
+	if (!test)
+		FAIL();
+	if ((bool)test == false)
+		FAIL();
+
+	test = false;
+	test_v = test;
+	test_e = false;
+	ASSERT_EQ(test_v, test_e);
+	if (test)
+		FAIL();
+	if ((bool)test == true)
+		FAIL();
+
+	std::string test_e2 = "false";
+	ASSERT_STREQ(test.c_str(), test_e2.c_str());
+	
+	test = "true";
+	test_v = test;
+	test_e = true;
+	ASSERT_EQ(test_v, test_e);
+
+	if (!test)
+		FAIL();
+	if ((bool)test == false)
+		FAIL();
+	
+	test = "false";
+	test_v = test;
+	test_e = false;
+	ASSERT_EQ(test_v, test_e);
+	if (test)
+		FAIL();
+	if ((bool)test == true)
+		FAIL();
+
+	test = "1";
+	test_v = test;
+	test_e = true;
+	ASSERT_EQ(test_v, test_e);
+
+	if (!test)
+		FAIL();
+	if ((bool)test == false)
+		FAIL();
+
+	test = "0";
+	test_v = test;
+	test_e = false;
+	ASSERT_EQ(test_v, test_e);
+	if (test)
+		FAIL();
+	if ((bool)test == true)
+		FAIL();
+	
+	test = 0;
+	test_v = test;
+	test_e = false;
+	ASSERT_EQ(test_v, test_e);
+	if (test)
+		FAIL();
+	if ((bool)test == true)
+		FAIL();
+
+	test = 1;
+	test_v = test;
+	test_e = true;
+	ASSERT_EQ(test_v, test_e);
+	if (!test)
+		FAIL();
+	if ((bool)test == false)
+		FAIL();
+}

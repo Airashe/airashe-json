@@ -1,8 +1,9 @@
 ﻿#pragma once
 #include "jtoken_behaviour.hpp"
-#include "structs/jtoken.hpp"
 #include <format>
 
+#include "structs/jmodifiers.hpp"
+#include "structs/jtoken.hpp"
 #include "structs/jtoken_value.hpp"
 
 namespace airashe::json
@@ -146,5 +147,7 @@ namespace airashe::json
         double to_d(const jtoken_value* value) const override { return 0; }
 
         long double to_ld(const jtoken_value* value) const override { return 0; }
+
+        bool to_bool(jtoken_value const* value) const override { return false; }
     };
 }

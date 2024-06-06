@@ -1,7 +1,5 @@
 ﻿#include "jtoken.hpp"
 
-#include <iostream>
-
 #include "jmodifiers.hpp"
 #include "jproperty.hpp"
 #include "behaviours/jbehaviour_factory.hpp"
@@ -10,16 +8,17 @@ namespace airashe::json
 {
     jtoken::jtoken()
     {
-        _type = jtoken_err;
+        set_type(jtoken_err);
         _value.value.string = nullptr;
         _value.modifiers = jmod_none;
+        _lastStrVal = std::string();
     }
 
     jtoken::jtoken(const jtoken& other)
     {
-        _type = other._type;
+        set_type(other._type);
         if (_type != jtoken_err)
-		    jbehaviour_factory::get_behaviour(_type)->copy_value(&_value, &other._value);
+		    _behaviour->copy_value(&_value, &other._value);
     }
 
     jtoken& jtoken::operator=(const jtoken& other)
@@ -28,159 +27,214 @@ namespace airashe::json
             return *this;
 
         if(_type != jtoken_err && _type != other._type)
-            jbehaviour_factory::get_behaviour(_type)->cleanup(&_value);
-        _type = other._type;
+            _behaviour->cleanup(&_value);
+        set_type(other._type);
         if (_type != jtoken_err)
-            jbehaviour_factory::get_behaviour(_type)->copy_value(&_value, &other._value);
+            _behaviour->copy_value(&_value, &other._value);
         return *this;
     }
 
     jtoken::~jtoken()
     {
         if (_type != jtoken_err)
-        jbehaviour_factory::get_behaviour(_type)->cleanup(&_value);
+            _behaviour->cleanup(&_value);
     }
 
     jtoken::jtoken(const char* string)
     {
-        _type = jtoken_string;
-        jbehaviour_factory::get_behaviour(_type)->assign_value(&_value, string);
+        set_type(jtoken_string);
+        _behaviour->assign_value(&_value, string);
     }
 
     jtoken::jtoken(long long int number)
     {
-        _type = jtoken_number;
+        set_type(jtoken_number);
         _value.modifiers = jmod_number_long_long;
-        jbehaviour_factory::get_behaviour(_type)->assign_value(&_value, &number);
+        _behaviour->assign_value(&_value, &number);
     }
 
     jtoken::jtoken(unsigned long long int number)
     {
-        _type = jtoken_number;
+        set_type(jtoken_number);
         _value.modifiers = jmod_number_long_long & jmod_number_unsigned;
-        jbehaviour_factory::get_behaviour(_type)->assign_value(&_value, &number);
+        _behaviour->assign_value(&_value, &number);
     }
 
     jtoken::jtoken(long int number)
     {
-        _type = jtoken_number;
+        set_type(jtoken_number);
         _value.modifiers = jmod_number_long;
-        jbehaviour_factory::get_behaviour(_type)->assign_value(&_value, &number);
+        _behaviour->assign_value(&_value, &number);
     }
 
     jtoken::jtoken(unsigned long int number)
     {
-        _type = jtoken_number;
+        set_type(jtoken_number);
         _value.modifiers = jmod_number_long & jmod_number_unsigned;
-        jbehaviour_factory::get_behaviour(_type)->assign_value(&_value, &number);
+        _behaviour->assign_value(&_value, &number);
+    }
+
+    jtoken::jtoken(int number)
+    {
+        set_type(jtoken_number);
+        _value.modifiers = jmod_number_integer;
+        _behaviour->assign_value(&_value, &number);
+    }
+
+    jtoken::jtoken(unsigned int number)
+    {
+        set_type(jtoken_number);
+        _value.modifiers = jmod_number_integer & jmod_number_unsigned;
+        _behaviour->assign_value(&_value, &number);
+    }
+
+    jtoken::jtoken(short number)
+    {
+        set_type(jtoken_number);
+        _value.modifiers = jmod_number_short;
+        _behaviour->assign_value(&_value, &number);
+    }
+
+    jtoken::jtoken(unsigned short number)
+    {
+        set_type(jtoken_number);
+        _value.modifiers = jmod_number_short & jmod_number_unsigned;
+        _behaviour->assign_value(&_value, &number);
+    }
+
+    jtoken::jtoken(char number)
+    {
+        set_type(jtoken_number);
+        _value.modifiers = jmod_number_char;
+        _behaviour->assign_value(&_value, &number);
+    }
+
+    jtoken::jtoken(unsigned char number)
+    {
+        set_type(jtoken_number);
+        _value.modifiers = jmod_number_char & jmod_number_unsigned;
+        _behaviour->assign_value(&_value, &number);
     }
 
     jtoken::jtoken(float number)
     {
-        _type = jtoken_number;
+        set_type(jtoken_number);
         _value.modifiers = jmod_number_float;
-        jbehaviour_factory::get_behaviour(_type)->assign_value(&_value, &number);
+        _behaviour->assign_value(&_value, &number);
     }
 
     jtoken::jtoken(double number)
     {
-        _type = jtoken_number;
+        set_type(jtoken_number);
         _value.modifiers = jmod_number_double;
-        jbehaviour_factory::get_behaviour(_type)->assign_value(&_value, &number);
+        _behaviour->assign_value(&_value, &number);
     }
 
     jtoken::jtoken(long double number)
     {
-        _type = jtoken_number;
+        set_type(jtoken_number);
         _value.modifiers = jmod_number_longdouble;
-        jbehaviour_factory::get_behaviour(_type)->assign_value(&_value, &number);
+        _behaviour->assign_value(&_value, &number);
+    }
+
+    jtoken::jtoken(bool boolean)
+    {
+        set_type(jtoken_boolean);
+        _value.modifiers = jmod_none;
+        _behaviour->assign_value(&_value, &boolean);
     }
 
     jtoken& jtoken::at(const jindex index)
     {
         return jbehaviour_factory::get_behaviour(_type)->at(&_value, index);
     }
-
+    
     std::string& jtoken::to_string() const
     {
-        _lastStrVal = jbehaviour_factory::get_behaviour(_type)->to_string(&_value);
+        _lastStrVal = _behaviour->to_string(&_value);
         return _lastStrVal;
     }
 
     long long int jtoken::to_ll() const
     {
-        return jbehaviour_factory::get_behaviour(_type)->to_ll(&_value);
+        return _behaviour->to_ll(&_value);
     }
 
     unsigned long long int jtoken::to_ull() const
     {
-        return jbehaviour_factory::get_behaviour(_type)->to_ull(&_value);
+        return _behaviour->to_ull(&_value);
     }
 
     long int jtoken::to_l() const
     {
-        return jbehaviour_factory::get_behaviour(_type)->to_l(&_value);
+        return _behaviour->to_l(&_value);
     }
 
     unsigned long int jtoken::to_ul() const
     {
-        return jbehaviour_factory::get_behaviour(_type)->to_ul(&_value);
+        return _behaviour->to_ul(&_value);
     }
 
     int jtoken::to_i() const
     {
-        return jbehaviour_factory::get_behaviour(_type)->to_i(&_value);
+        return _behaviour->to_i(&_value);
     }
 
     short jtoken::to_s() const
     {
-        return jbehaviour_factory::get_behaviour(_type)->to_s(&_value);
+        return _behaviour->to_s(&_value);
     }
 
     unsigned short jtoken::to_us() const
     {
-        return jbehaviour_factory::get_behaviour(_type)->to_us(&_value);
+        return _behaviour->to_us(&_value);
     }
 
     char jtoken::to_c() const
     {
-        return jbehaviour_factory::get_behaviour(_type)->to_c(&_value);
+        return _behaviour->to_c(&_value);
     }
 
     unsigned char jtoken::to_uc() const
     {
-        return jbehaviour_factory::get_behaviour(_type)->to_uc(&_value);
+        return _behaviour->to_uc(&_value);
     }
 
     unsigned int jtoken::to_ui() const
     {
-        return jbehaviour_factory::get_behaviour(_type)->to_ui(&_value);
+        return _behaviour->to_ui(&_value);
     }
 
     float jtoken::to_f() const
     {
-        return jbehaviour_factory::get_behaviour(_type)->to_f(&_value);
+        return _behaviour->to_f(&_value);
     }
 
     double jtoken::to_d() const
     {
-        return jbehaviour_factory::get_behaviour(_type)->to_d(&_value);
+        return _behaviour->to_d(&_value);
     }
 
     long double jtoken::to_ld() const
     {
-        return jbehaviour_factory::get_behaviour(_type)->to_ld(&_value);
+        return _behaviour->to_ld(&_value);
     }
 
-    jtoken_type jtoken::get_type() const
+    bool jtoken::to_bool() const
     {
-        return _type;
+        return _behaviour->to_bool(&_value);
+    }
+    
+    void jtoken::set_type(jtoken_type type)
+    {
+        this->_type = type;
+        this->_behaviour = jbehaviour_factory::get_behaviour(type);
     }
 
     jtoken jarray()
     {
         auto array = jtoken();
-        array._type = jtoken_type::jtoken_array;
+        array.set_type(jtoken_array);
         return array;
     }
 
@@ -197,6 +251,7 @@ namespace airashe::json
     jtoken jobject()
     {
         auto object = jtoken();
+        object.set_type(jtoken_object);
         object._type = jtoken_type::jtoken_object;
 
         return object;

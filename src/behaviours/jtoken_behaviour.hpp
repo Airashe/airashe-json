@@ -1,7 +1,11 @@
 ﻿#pragma once
+#include <stdexcept>
+
+#include "structs/jmodifiers.hpp"
 
 namespace airashe::json
 {
+    struct jtoken;
     struct jtoken_value;
     struct jindex;
 
@@ -155,5 +159,12 @@ namespace airashe::json
          * @return Value as long double.
          */
         virtual long double to_ld(jtoken_value const* value) const = 0;
+
+        /**
+         * Convert value to boolean.
+         * @param value Value to extract.
+         * @return Value as boolean.
+         */
+        virtual bool to_bool(jtoken_value const* value) const = 0;
     };
 }

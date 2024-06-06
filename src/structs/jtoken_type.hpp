@@ -25,7 +25,12 @@ namespace airashe::json
         /**
          * @brief Number.
          */
-        jtoken_number = 0x8, 
+        jtoken_number = 0x8,
+
+        /**
+         * @brief Boolean.
+         */
+        jtoken_boolean = 0x10, 
      
         /**
          * @brief Invalid token.

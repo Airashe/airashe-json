@@ -195,5 +195,40 @@ namespace airashe::json
         {
             return to_appropriate_decimal<long double>(value->value.string);
         }
+
+        bool to_bool(jtoken_value const* value) const override
+        {
+            if (value->value.string == nullptr)
+                return false;
+
+            size_t len = strlen(value->value.string);
+            if (len == 4)
+            {
+                if (std::tolower(value->value.string[0]) == 't' &&
+                    std::tolower(value->value.string[1]) == 'r' &&
+                    std::tolower(value->value.string[2]) == 'u' &&
+                    std::tolower(value->value.string[3]) == 'e')
+                    return true;
+                return false;
+            }
+            if (len == 5)
+            {
+                if (std::tolower(value->value.string[0]) == 'f' &&
+                    std::tolower(value->value.string[1]) == 'a' &&
+                    std::tolower(value->value.string[2]) == 'l' &&
+                    std::tolower(value->value.string[3]) == 's' &&
+                    std::tolower(value->value.string[4]) == 'e')
+                    return false;
+            }
+
+            const long long int ll = to_ll(value);
+            if (ll == 0)
+            {
+                const unsigned long long int ull = to_ull(value);
+                return ull;
+            }
+            
+            return ll;
+        }
     };
 }

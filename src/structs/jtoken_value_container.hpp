@@ -28,6 +28,11 @@ namespace airashe::json
         long double float_number;
 
         /**
+         * Value as boolean.
+         */
+        bool boolean;
+
+        /**
          * Childrens of current token.
          */
         std::map<jindex, jtoken>* childrens;

@@ -2,6 +2,7 @@
 #include <map>
 
 #include "jarray_behaviour.hpp"
+#include "jboolean_behaviour.hpp"
 #include "jcontainer_behaviour.hpp"
 #include "jnumber_behaviour.hpp"
 #include "jstring_behaviour.hpp"
@@ -24,7 +25,8 @@ namespace airashe::json
             {jtoken_string, new jstring_behaviour},
             {jtoken_array, new jarray_behaviour},
             {jtoken_object, new jcontainer_behaviour},
-            {jtoken_number, new jnumber_behaviour}
+            {jtoken_number, new jnumber_behaviour},
+            {jtoken_boolean, new jboolean_behaviour}
         };
     public:
         /**
