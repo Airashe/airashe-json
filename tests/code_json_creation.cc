@@ -10,6 +10,22 @@ void test_json_string()
 	ASSERT_STREQ(str_val, "test_string");
 }
 
+void test_json_l()
+{
+	jtoken token = 5;
+	const char* str = token;
+	
+	str = token = -5;
+	str = token = 5.5;
+	str = token = 5.5f;
+	str = token = "5.5";
+
+	str = token = true;
+	str = token = false;
+
+	str = token = nullptr;
+}
+
 void test_json_array()
 {
 	jtoken array = jarray({ "value1", "value2" });
@@ -96,6 +112,18 @@ TEST(JSON, CreateObject)
 	try
 	{
 		test_json_object();
+	}
+	catch (std::exception&)
+	{
+		FAIL();
+	}
+}
+
+TEST(JSON, CheckLeak)
+{
+	try
+	{
+		test_json_l();
 	}
 	catch (std::exception&)
 	{
