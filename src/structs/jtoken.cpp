@@ -42,8 +42,20 @@ namespace airashe::json
 
     jtoken::jtoken(const char* string)
     {
+        if (string == nullptr)
+        {
+            set_type(jtoken_null);
+            _behaviour->assign_value(&_value, string);
+            return;
+        }
         set_type(jtoken_string);
         _behaviour->assign_value(&_value, string);
+    }
+
+    jtoken::jtoken(const std::string& string)
+    {
+        set_type(jtoken_string);
+        _behaviour->assign_value(&_value, string.c_str());
     }
 
     jtoken::jtoken(long long int number)
@@ -255,6 +267,13 @@ namespace airashe::json
         object._type = jtoken_type::jtoken_object;
 
         return object;
+    }
+
+    jtoken jnull()
+    {
+        auto null = jtoken();
+        null.set_type(jtoken_null);
+        return null;
     }
 
     jtoken jobject(const std::initializer_list<jproperty> childrens)

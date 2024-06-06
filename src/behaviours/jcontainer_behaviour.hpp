@@ -18,14 +18,17 @@ namespace airashe::json
          * @brief Start character of container.
          */
         char _start_char;
-        
+
         /**
          * @brief End character of container.
          */
         char _end_char;
+
     public:
-        jcontainer_behaviour() : jtoken_behaviour(), _start_char('{'), _end_char('}') { }
-        
+        jcontainer_behaviour() : jtoken_behaviour(), _start_char('{'), _end_char('}')
+        {
+        }
+
         void cleanup(jtoken_value* value) const override
         {
             delete value->value.childrens;
@@ -65,7 +68,7 @@ namespace airashe::json
         {
             if (value == nullptr)
                 return "";
-            
+
             const size_t size = value->value.childrens == nullptr ? 0 : value->value.childrens->size();
             size_t properties_size = 0;
             std::string* properties = new std::string[size];
@@ -74,26 +77,35 @@ namespace airashe::json
             size_t i = 0;
             if (size != 0)
                 for (auto& [key, token] : *value->value.childrens)
-            {
-                if (key.get_name() != nullptr)
                 {
-                    properties_size++;
-                    properties[i] = std::format("\"{0}\"", key.get_name());
-                }
+                    if (key.get_name() != nullptr)
+                    {
+                        properties_size++;
+                        properties[i] = std::format("\"{0}\"", key.get_name());
+                    }
 
-                std::string token_value;
-                if (token.get_type() == jtoken_string)
-                    token_value = std::format("\"{0}\"", token.to_string());
-                else
-                    token_value = token.to_string();
-                tokens[i] = token_value;
-                i++;
-            }
+                    std::string token_value;
+                    jtoken_type token_type = token.get_type();
+                    switch (token_type)
+                    {
+                    case jtoken_string:
+                        token_value = std::format("\"{0}\"", token.to_string());
+                        break;
+                    case jtoken_null:
+                        token_value = "null";
+                        break;
+                    default:
+                        token_value = token.to_string();
+                        break;
+                    }
+                    tokens[i] = token_value;
+                    i++;
+                }
 
             std::string result;
             result += _start_char;
             bool include_props = properties_size == size;
-            
+
             for (i = 0; i < size; i++)
             {
                 if (include_props)
@@ -126,22 +138,22 @@ namespace airashe::json
 
         unsigned long long to_ull(const jtoken_value* value) const override { return 0; }
 
-        long to_l(const jtoken_value* value) const override { return 0;}
-        
+        long to_l(const jtoken_value* value) const override { return 0; }
+
         unsigned long to_ul(const jtoken_value* value) const override { return 0; }
 
         int to_i(const jtoken_value* value) const override { return 0; }
-        
+
         unsigned int to_ui(const jtoken_value* value) const override { return 0; }
 
         short to_s(const jtoken_value* value) const override { return 0; }
-        
+
         unsigned short to_us(const jtoken_value* value) const override { return 0; }
 
         char to_c(const jtoken_value* value) const override { return 0; }
 
         unsigned char to_uc(const jtoken_value* value) const override { return 0; }
-        
+
         float to_f(const jtoken_value* value) const override { return 0; }
 
         double to_d(const jtoken_value* value) const override { return 0; }

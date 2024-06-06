@@ -20,6 +20,7 @@ add_library(${AIRASHEJSON_PROJECT_NAME}
     src/behaviours/jbehaviour_factory.hpp
     src/behaviours/jboolean_behaviour.hpp
     src/behaviours/jcontainer_behaviour.hpp
+    src/behaviours/jnull_behaviour.hpp
     src/behaviours/jnumber_behaviour.hpp 
     src/behaviours/jstring_behaviour.hpp 
     src/behaviours/jtoken_behaviour.hpp 

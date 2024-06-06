@@ -41,6 +41,7 @@ namespace airashe::json
         ~jtoken();
         
         jtoken(const char* string);
+        jtoken(const std::string& string);
         jtoken(long long int number);
         jtoken(unsigned long long int number);
         jtoken(long int number);
@@ -177,8 +178,15 @@ namespace airashe::json
 
         friend jtoken jarray();
         friend jtoken jobject();
+        friend jtoken jnull();
     };
 
+    /**
+     * Create JSON null token.
+     * @return Returns created token.
+     */
+    jtoken jnull();
+ 
     /**
      * Create JSON array token.
      * @return Returns created array.

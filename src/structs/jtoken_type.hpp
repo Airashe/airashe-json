@@ -30,7 +30,12 @@ namespace airashe::json
         /**
          * @brief Boolean.
          */
-        jtoken_boolean = 0x10, 
+        jtoken_boolean = 0x10,
+
+        /**
+         * @brief NULL.
+         */
+        jtoken_null = 0x20,
      
         /**
          * @brief Invalid token.

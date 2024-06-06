@@ -57,6 +57,14 @@ void test_json_object()
 	jtoken empty_obj = jobject();
 	test = empty_obj;
 	ASSERT_STREQ(test, "{}");
+
+	empty_obj["bool_key"] = true;
+	empty_obj["double_key"] = 5.5;
+	empty_obj["int_key"] = 5;
+	empty_obj["null_key"] = nullptr;
+	empty_obj["str_key"] = "str";
+	
+	ASSERT_STREQ(empty_obj.c_str(), R"({"bool_key": true, "double_key": 5.5, "int_key": 5, "null_key": null, "str_key": "str"})");
 }
 
 TEST(JSON, CreateString)
@@ -153,6 +161,10 @@ TEST(ValueConvertion, ToStrings)
 	token = 5l;
 	val3 = token.to_string();
 	ASSERT_STREQ(val3.c_str(), "5");
+
+	std::string val4 = "hello world";
+	token = val4;
+	ASSERT_STREQ(token.c_str(), val4.c_str());
 }
 
 TEST(ValueConvertion, StringToNumbers)
@@ -270,4 +282,13 @@ TEST(ValueConvertion, Booleans)
 		FAIL();
 	if ((bool)test == false)
 		FAIL();
+}
+
+TEST(ValueConvertion, Nulls)
+{
+	jtoken test = nullptr;
+	ASSERT_EQ(test.get_type(), jtoken_null);
+
+	test = airashe::json::jnull();
+	ASSERT_EQ(test.get_type(), jtoken_null);
 }
