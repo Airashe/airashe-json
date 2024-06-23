@@ -17,8 +17,7 @@ namespace airashe::json
     jtoken::jtoken(const jtoken& other)
     {
         set_type(other._type);
-        if (_type != jtoken_err)
-		    _behaviour->copy_value(&_value, &other._value);
+		_behaviour->copy_value(&_value, &other._value);
     }
 
     jtoken& jtoken::operator=(const jtoken& other)
@@ -26,18 +25,34 @@ namespace airashe::json
         if (this == &other)
             return *this;
 
-        if(_type != jtoken_err && _type != other._type)
+        if(_type != other._type)
             _behaviour->cleanup(&_value);
         set_type(other._type);
-        if (_type != jtoken_err)
-            _behaviour->copy_value(&_value, &other._value);
+        _behaviour->copy_value(&_value, &other._value);
+        return *this;
+    }
+
+    jtoken::jtoken(jtoken&& other) noexcept
+    {
+        set_type(other._type);
+        _behaviour->move_value(&_value, &other._value);
+    }
+
+    jtoken& jtoken::operator=(jtoken&& other) noexcept
+    {
+        if (this == &other)
+            return *this;
+
+        if(_type != other._type)
+            _behaviour->cleanup(&_value);
+        set_type(other._type);
+        _behaviour->move_value(&_value, &other._value);
         return *this;
     }
 
     jtoken::~jtoken()
     {
-        if (_type != jtoken_err)
-            _behaviour->cleanup(&_value);
+        _behaviour->cleanup(&_value);
     }
 
     jtoken::jtoken(const char* string)
@@ -155,11 +170,6 @@ namespace airashe::json
         _value.modifiers = jmod_none;
         _behaviour->assign_value(&_value, &boolean);
     }
-
-    jtoken& jtoken::at(const jindex index)
-    {
-        return jbehaviour_factory::get_behaviour(_type)->at(&_value, index);
-    }
     
     std::string& jtoken::to_string() const
     {
@@ -236,11 +246,83 @@ namespace airashe::json
     {
         return _behaviour->to_bool(&_value);
     }
-    
+
+    void jtoken::patch_type(jtoken_type type, jmodifiers modifiers)
+    {
+        if (type == _type)
+            return;
+        
+        auto old_behaviour = _behaviour;
+        jtoken_value old_value;
+        old_behaviour->copy_value(&old_value, &_value);
+        old_behaviour->cleanup(&_value);
+        
+        set_type(type);
+        _value.modifiers = modifiers;
+
+        _behaviour->patch_value(&_value, &old_value, old_behaviour);
+        old_behaviour->cleanup(&old_value);
+    }
+
     void jtoken::set_type(jtoken_type type)
     {
         this->_type = type;
         this->_behaviour = jbehaviour_factory::get_behaviour(type);
+    }
+
+    jtoken& jtoken::at(const jindex index)
+    {
+        return this->_behaviour->at(&_value, index);
+    }
+    
+    bool jtoken::empty() const
+    {
+        return this->_behaviour->empty(&_value);
+    }
+
+    size_t jtoken::size() const
+    {
+        return this->_behaviour->size(&_value);
+    }
+
+    jtoken& jtoken::front()
+    {
+        return this->_behaviour->front(&_value);
+    }
+
+    const jtoken& jtoken::front() const
+    {
+        return this->_behaviour->front(&_value);
+    }
+
+    jtoken& jtoken::back()
+    {
+        return this->_behaviour->back(&_value);
+    }
+
+    const jtoken& jtoken::back() const
+    {
+        return this->_behaviour->back(&_value);
+    }
+
+    jtoken::iterator jtoken::begin() noexcept
+    {
+        return this->_behaviour->begin(&_value);
+    }
+
+    jtoken::const_iterator jtoken::cbegin() const noexcept
+    {
+        return this->_behaviour->cbegin(&_value);
+    }
+
+    jtoken::iterator jtoken::end() noexcept
+    {
+        return this->_behaviour->end(&_value);
+    }
+
+    jtoken::const_iterator jtoken::cend() const noexcept
+    {
+        return this->_behaviour->cend(&_value);
     }
 
     jtoken jarray()
@@ -250,7 +332,7 @@ namespace airashe::json
         return array;
     }
 
-    jtoken jarray(const std::initializer_list<jtoken> childrens)
+    jtoken jarray(const std::initializer_list<jtoken>& childrens)
     {
         auto array = jarray();
         const jtoken* children = childrens.begin();
@@ -276,7 +358,7 @@ namespace airashe::json
         return null;
     }
 
-    jtoken jobject(const std::initializer_list<jproperty> childrens)
+    jtoken jobject(const std::initializer_list<jproperty>& childrens)
     {
         auto object = jobject();
         const jproperty* children = childrens.begin();

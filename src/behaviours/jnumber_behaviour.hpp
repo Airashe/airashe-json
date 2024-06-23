@@ -129,6 +129,140 @@ namespace airashe::json
             }
         }
 
+        void move_value(jtoken_value* target, jtoken_value* source) const override
+        {
+            if (target == nullptr)
+                return;
+            
+            if (source == nullptr)
+            {
+                target->modifiers = jmod_number_integer;
+                target->value.int_number = 0;
+                return;
+            }
+
+            target->modifiers = source->modifiers;
+            if (is_integer(source))
+            {
+                target->value.int_number = source->value.int_number;
+                return;
+            }
+            
+            if (is_decimal(source))
+            {
+                target->value.float_number = source->value.float_number;
+            }
+
+            source->modifiers = jmod_none;
+            source->value.string = nullptr;
+        }
+
+        void patch_value(jtoken_value* target, jtoken_value const* source, jtoken_behaviour* const source_behaviour) override
+        {
+            if (target == nullptr)
+                return;
+            
+            if (source == nullptr)
+            {
+                target->modifiers = jmod_number_integer;
+                target->value.int_number = 0;
+                return;
+            }
+
+            if (source_behaviour == this)
+            {
+                copy_value(target, source);
+                return;
+            }
+
+            if (has_flag(target, jmod_number_char))
+            {
+                if (has_flag(target, jmod_number_unsigned))
+                {
+                    unsigned char v = source_behaviour->to_uc(source);
+                    assign_value(target, &v);
+                }
+                else
+                {
+                    char v = source_behaviour->to_c(source);
+                    assign_value(target, &v);
+                }
+            }
+            else if (has_flag(target, jmod_number_short))
+            {
+                if (has_flag(target, jmod_number_unsigned))
+                {
+                    unsigned short v = source_behaviour->to_us(source);
+                    assign_value(target, &v);
+                }
+                else
+                {
+                    short v = source_behaviour->to_s(source);
+                    assign_value(target, &v);
+                }
+            }
+            else if (has_flag(target, jmod_number_integer))
+            {
+                if (has_flag(target, jmod_number_unsigned))
+                {
+                    unsigned int v = source_behaviour->to_ui(source);
+                    assign_value(target, &v);
+                }
+                else
+                {
+                    int v = source_behaviour->to_i(source);
+                    assign_value(target, &v);
+                }
+            }
+            else if (has_flag(target, jmod_number_long))
+            {
+                if (has_flag(target, jmod_number_unsigned))
+                {
+                    unsigned long v = source_behaviour->to_ul(source);
+                    assign_value(target, &v);
+                }
+                else
+                {
+                    long v = source_behaviour->to_l(source);
+                    assign_value(target, &v);
+                }
+            }
+            else if (has_flag(target, jmod_number_long_long))
+            {
+                if (has_flag(target, jmod_number_unsigned))
+                {
+                    unsigned long long v = source_behaviour->to_ull(source);
+                    assign_value(target, &v);
+                }
+                else
+                {
+                    long long v = source_behaviour->to_ll(source);
+                    assign_value(target, &v);
+                }
+            }
+            else if (has_flag(target, jmod_number_float))
+            {
+                float v = source_behaviour->to_f(source);
+                assign_value(target, &v);
+            }
+            else if (has_flag(target, jmod_number_double))
+            {
+                double v = source_behaviour->to_d(source);
+                assign_value(target, &v);
+            }
+            else if (has_flag(target, jmod_number_longdouble))
+            {
+                long double v = source_behaviour->to_ld(source);
+                assign_value(target, &v);
+            }
+            else
+            {
+                target->modifiers = jmod_number_integer;
+                target->value.int_number = 0;
+                return;
+            }
+        }
+
         std::string to_string(jtoken_value const* value) const override
         {
             if (value == nullptr)

@@ -5,6 +5,7 @@
 #include "jtoken_type.hpp"
 #include "jtoken_value.hpp"
 #include "jindex.hpp"
+#include "jmodifiers.hpp"
 
 namespace airashe::json
 {
@@ -33,13 +34,24 @@ namespace airashe::json
          * Value of last to string.
          */
         mutable std::string _lastStrVal;
-     
+
+        /**
+            * Set type of token.
+            * @param type Type of token.
+            */
+        void set_type(jtoken_type type);
+
     public:
+        typedef typename std::map<jindex, jtoken>::iterator iterator;
+        typedef typename std::map<jindex, jtoken>::const_iterator const_iterator;
+
         jtoken();
         jtoken(const jtoken& other);
         jtoken& operator=(const jtoken& other);
+        jtoken(jtoken&& other) noexcept;
+        jtoken& operator=(jtoken&& other) noexcept;
         ~jtoken();
-        
+
         jtoken(const char* string);
         jtoken(const std::string& string);
         jtoken(long long int number);
@@ -52,21 +64,12 @@ namespace airashe::json
         jtoken(unsigned short number);
         jtoken(char number);
         jtoken(unsigned char number);
-     
+
         jtoken(float number);
         jtoken(double number);
         jtoken(long double number);
 
         jtoken(bool boolean);
-
-        /**
-         * Get child token within container.
-         * @param index index of token.
-         * @return Child token.
-         */
-        jtoken& at(jindex index);
-        jtoken& operator[](const char* index) { return at(index); }
-        jtoken& operator[](int index) { return at(index); }
 
         /**
          * Convert token to string.
@@ -171,14 +174,38 @@ namespace airashe::json
         jtoken_type get_type() const { return _type; }
 
         /**
-         * Set type of token.
-         * @param type Type of token.
+         * Change token type and save value.
+         * @param type New type of token.
+         * @param type Modificators of new value.
          */
-        void set_type(jtoken_type type);
+        void patch_type(jtoken_type type, jmodifiers modifiers = jmod_none);
 
         friend jtoken jarray();
+        friend jtoken jarray(const std::initializer_list<jtoken>& childrens);
         friend jtoken jobject();
+        friend jtoken jobject(const std::initializer_list<jproperty>& childrens);
         friend jtoken jnull();
+
+        // container functions
+        /**
+         * Get child token within container.
+         * @param index index of token.
+         * @return Child token.
+         */
+        jtoken& at(jindex index);
+        jtoken& operator[](const char* index) { return at(index); }
+        jtoken& operator[](int index) { return at(index); }
+
+        bool empty() const;
+        size_t size() const;
+        jtoken& front();
+        const jtoken& front() const;
+        jtoken& back();
+        const jtoken& back() const;
+        iterator begin() noexcept;
+        const_iterator cbegin() const noexcept;
+        iterator end() noexcept;
+        const_iterator cend() const noexcept;
     };
 
     /**
@@ -186,7 +213,7 @@ namespace airashe::json
      * @return Returns created token.
      */
     jtoken jnull();
- 
+
     /**
      * Create JSON array token.
      * @return Returns created array.
@@ -198,7 +225,7 @@ namespace airashe::json
      * @param childrens Child elements that will be put to array.
      * @return Returns created array.
      */
-    jtoken jarray(std::initializer_list<jtoken> childrens);
+    jtoken jarray(const std::initializer_list<jtoken>& childrens);
 
     /**
      * Create JSON object token.
@@ -211,5 +238,5 @@ namespace airashe::json
      * @param childrens Properties that will be put to object.
      * @return Created object.
      */
-    jtoken jobject(std::initializer_list<jproperty> childrens);
+    jtoken jobject(const std::initializer_list<jproperty>& childrens);
 }

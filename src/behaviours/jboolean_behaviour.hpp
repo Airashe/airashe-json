@@ -40,6 +40,43 @@ namespace airashe::json
             target->modifiers = source->modifiers;
             target->value.boolean = source->value.boolean;
         }
+
+        void move_value(jtoken_value* target, jtoken_value* source) const override
+        {
+            if (target == source)
+                return;
+
+            if (source == nullptr)
+            {
+                target->value.boolean = false;
+                return;
+            }
+
+            target->modifiers = source->modifiers;
+            target->value.boolean = source->value.boolean;
+
+            source->modifiers = jmod_none;
+            source->value.string = nullptr;
+        }
+
+        void patch_value(jtoken_value* target, jtoken_value const* source, jtoken_behaviour* const source_behaviour) override
+        {
+            if (source == nullptr)
+            {
+                target->modifiers = jmod_none;
+                target->value.boolean = false;
+                return;
+            }
+
+            if (this == source_behaviour)
+            {
+                copy_value(target, source);
+                return;
+            }
+
+            bool b = source_behaviour->to_bool(source);
+            assign_value(target, &b);
+        }
         
         long long to_ll(const jtoken_value* value) const override { return value->value.boolean; }
         

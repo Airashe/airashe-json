@@ -27,8 +27,23 @@ namespace airashe::json
             target->modifiers = jmod_none;
             target->value.string = nullptr;
         }
+
+        void move_value(jtoken_value* target, jtoken_value* source) const override
+        {
+            target->modifiers = jmod_none;
+            target->value.string = nullptr;
+        }
         
         long long to_ll(const jtoken_value* value) const override { return 0; }
+
+        void patch_value(jtoken_value* target, jtoken_value const* source, jtoken_behaviour* const source_behaviour) override
+        {
+            if (target == nullptr)
+                return;
+
+            target->modifiers = jmod_none;
+            target->value.string = nullptr;
+        }
         
         unsigned long long to_ull(const jtoken_value* value) const override { return 0; }
         long to_l(const jtoken_value* value) const override { return 0; }

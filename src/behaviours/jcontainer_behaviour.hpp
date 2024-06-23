@@ -25,6 +25,10 @@ namespace airashe::json
         char _end_char;
 
     public:
+        typedef typename std::map<jindex, jtoken>::iterator iterator;
+        typedef typename std::map<jindex, jtoken>::const_iterator const_iterator;
+        typedef typename std::map<jindex, jtoken> tokens;
+        
         jcontainer_behaviour() : jtoken_behaviour(), _start_char('{'), _end_char('}')
         {
         }
@@ -43,18 +47,23 @@ namespace airashe::json
 
             if (source == nullptr)
             {
-                target->value.childrens = new std::map<jindex, jtoken>();
+                target->value.childrens = new tokens();
                 target->modifiers = jmod_none;
                 return;
             }
+            
+            delete target->value.childrens;
 
-            if (target != nullptr)
-                delete target->value.childrens;
-
-            target->value.childrens = new std::map<jindex, jtoken>();
+            target->value.childrens = new tokens();
             jtoken_value const* src = (jtoken_value const*)source;
-            for (int i = 0; i < src->value.childrens->size(); i++)
-                target->value.childrens->insert({i, src->value.childrens->at(i)});
+            if (src->value.childrens != nullptr)
+            {
+                for (int i = 0; i < src->value.childrens->size(); i++)
+                {
+                    auto& child = src->value.childrens->at(jindex(i)); // TODO: can not access elements within the map if object
+                    target->value.childrens->insert({ jindex(i), child });
+                }
+            }
 
             target->modifiers = src->modifiers;
         }
@@ -62,6 +71,27 @@ namespace airashe::json
         void copy_value(jtoken_value* target, jtoken_value const* source) const override
         {
             assign_value(target, source);
+        }
+
+        void move_value(jtoken_value* target, jtoken_value* source) const override
+        {
+            target->value.childrens = std::move(source->value.childrens);
+            target->modifiers = source->modifiers;
+            source->value.childrens = nullptr;
+            source->modifiers = jmod_none;
+        }
+
+        void patch_value(jtoken_value* target, jtoken_value const* source, jtoken_behaviour* const source_behaviour) override
+        {
+            if (target == nullptr)
+                return;
+            if (source == nullptr || this == source_behaviour)
+            {
+                assign_value(target, source);
+                return;
+            }
+
+            assign_value(target, nullptr);
         }
 
         std::string to_string(jtoken_value const* value) const override
@@ -78,10 +108,11 @@ namespace airashe::json
             if (size != 0)
                 for (auto& [key, token] : *value->value.childrens)
                 {
-                    if (key.get_name() != nullptr)
+                    const auto& key_name = key.get_name();
+                    if (key_name != nullptr)
                     {
                         properties_size++;
-                        properties[i] = std::format("\"{0}\"", key.get_name());
+                        properties[i] = std::format("\"{0}\"", key_name);
                     }
 
                     std::string token_value;
@@ -124,14 +155,77 @@ namespace airashe::json
         jtoken& at(jtoken_value* value, const jindex index) const override
         {
             if (value->value.childrens == nullptr)
-                value->value.childrens = new std::map<jindex, jtoken>();
+                value->value.childrens = new tokens();
 
-            for (auto& child : *value->value.childrens)
-                if (child.first == index)
-                    return child.second;
+            if (value->value.childrens->contains(index))
+                return (*value->value.childrens)[index];
 
-            value->value.childrens->insert({index, jtoken()});
-            return value->value.childrens->at(index);
+            auto new_index = index.get_index() == -1 ? jindex(value->value.childrens->size(), index.get_name()) : jindex(index);
+            value->value.childrens->insert({new_index, jtoken()});
+            return (*value->value.childrens)[new_index];
+        }
+
+        bool empty(jtoken_value const* value) const override
+        {
+            return value->value.childrens->empty();
+        }
+
+        size_t size(jtoken_value const* value) const override
+        {
+            return value->value.childrens->size();
+        }
+
+        jtoken& front(jtoken_value* value) const override
+        {
+            if (value->value.childrens == nullptr)
+                value->value.childrens = new tokens();
+
+            if (value->value.childrens->empty())
+                throw std::out_of_range("jtoken::front");
+
+            return (*value->value.childrens)[0];
+        }
+
+        const jtoken& front(jtoken_value const* value) const override
+        {
+            return this->front(const_cast<jtoken_value*>(value));
+        }
+
+        jtoken& back(jtoken_value* value) const override
+        {
+            if (value->value.childrens == nullptr)
+                value->value.childrens = new tokens();
+
+            if (value->value.childrens->empty())
+                throw std::out_of_range("jtoken::back");
+
+            size_t size = value->value.childrens->size() - 1;
+            return (*value->value.childrens)[size];
+        }
+
+        const jtoken& back(jtoken_value const* value) const override
+        {
+            return this->back(const_cast<jtoken_value*>(value));
+        }
+
+        iterator begin(jtoken_value* value) const override
+        {
+            return value->value.childrens->begin();
+        }
+
+        const_iterator cbegin(jtoken_value const* value) const override
+        {
+            return value->value.childrens->begin();
+        }
+
+        iterator end(jtoken_value* value) const override
+        {
+            return value->value.childrens->end();
+        }
+
+        const_iterator cend(jtoken_value const* value) const override
+        {
+            return value->value.childrens->end();
         }
 
         long long to_ll(const jtoken_value* value) const override { return 0; }

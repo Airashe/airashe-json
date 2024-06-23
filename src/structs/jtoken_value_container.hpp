@@ -5,7 +5,7 @@ namespace airashe::json
 {
     struct jtoken;
     struct jindex;
-    
+
     /**
      * Container to store value of JSON token.
      */
@@ -16,7 +16,7 @@ namespace airashe::json
          * String value.
          */
         char* string;
-        
+
         /**
          * Number as integer value.
          */

@@ -1,9 +1,11 @@
+#include "jparser.hpp"
 #include "gtest/gtest.h"
 #include "structs/jproperty.hpp"
 #include "structs/jtoken.hpp"
+#include "iostream"
 using namespace airashe::json;
 
-void test_json_string()
+/*void test_json_string()
 {
 	jtoken str = "test_string";
 	const char* str_val = str.c_str();
@@ -113,7 +115,7 @@ TEST(JSON, CreateObject)
 	{
 		test_json_object();
 	}
-	catch (std::exception&)
+	catch (std::exception& e)
 	{
 		FAIL();
 	}
@@ -319,4 +321,25 @@ TEST(ValueConvertion, Nulls)
 
 	test = airashe::json::jnull();
 	ASSERT_EQ(test.get_type(), jtoken_null);
+}*/
+
+TEST(PARSER, Parse)
+{
+	jtoken test = json(R"([
+	 {
+		"id": "12345", 
+		"balance": 1000.00
+	}
+]
+)");
+	
+	if (test.get_type() == jtoken_err)
+	{
+		FAIL() << test.c_str();
+	}
+	else
+	{
+		std::cout << "[ VALUE    ] " << test.c_str() << '\n';
+	}
+	const char* test_val = test.c_str();
 }

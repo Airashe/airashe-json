@@ -110,14 +110,47 @@ namespace airashe::json
                 target->modifiers = jmod_none;
                 return;
             }
-
-            if (target->value.string != nullptr)
-                delete[] target->value.string;
+            
+            delete[] target->value.string;
 
             size_t length = strlen(source->value.string);
             target->value.string = new char[length + 1];
             strcpy(target->value.string, source->value.string);
             target->modifiers = source->modifiers;
+        }
+
+        void move_value(jtoken_value* target, jtoken_value* source) const override
+        {
+            if (target == source)
+                return;
+
+            target->value.string = source->value.string;
+            target->modifiers = source->modifiers;
+            
+            source->value.string = nullptr;
+            source->modifiers = jmod_none;
+        }
+
+        void patch_value(jtoken_value* target, jtoken_value const* source, jtoken_behaviour* const source_behaviour) override
+        {
+            if (target == nullptr)
+                return;
+            
+            if (source_behaviour == this)
+                return copy_value(target, source);
+
+            auto _str = source_behaviour->to_string(source);
+            assign_value(target, _str.c_str());
+        }
+
+        bool empty(jtoken_value const* value) const override
+        {
+            return value->value.string == nullptr || strlen(value->value.string) == 0;
+        }
+
+        size_t size(jtoken_value const* value) const override
+        {
+            return strlen(value->value.string);
         }
 
         std::string to_string(jtoken_value const* value) const override

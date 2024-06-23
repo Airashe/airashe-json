@@ -28,7 +28,7 @@ namespace airashe::json
         if (some_index_is_unset && some_name_is_unset)
             return false;
 
-        if (some_index_is_unset && !some_name_is_unset)
+        if (!some_name_is_unset)
             return strcmp(left._name, right._name) == 0;
 
         return left._index == right._index;
@@ -42,7 +42,7 @@ namespace airashe::json
         if (some_index_is_unset && some_name_is_unset)
             return true;
 
-        if (some_index_is_unset && !some_name_is_unset)
+        if (!some_name_is_unset)
             return strcmp(left._name, right._name) < 0;
 
         return left._index < right._index;
