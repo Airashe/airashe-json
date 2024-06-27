@@ -272,10 +272,29 @@ namespace airashe::json
 
         bool check_errors(jtoken& target)
         {
-            if (target.get_type() == jtoken_err)
+            if (!target.is_valid())
                 return true;
 
-            // TODO: write functions that makes jgtoken behave like standart container.
+            if (!is_container(target.get_type()))
+                return false;
+
+            jtoken err_token;
+            bool inner_error = false;
+            for (auto& [key, token] : target)
+            {
+                if (check_errors(token))
+                {
+                    err_token = token.to_string();
+                    err_token.patch_type(jtoken_err);
+                    inner_error = true;
+                    break;
+                }
+            }
+            if (!inner_error)
+                return false;
+
+            target = err_token;
+            return true;
         }
 
     public:

@@ -247,6 +247,11 @@ namespace airashe::json
         return _behaviour->to_bool(&_value);
     }
 
+    bool jtoken::is_valid() const
+    {
+        return _type != jtoken_err;
+    }
+
     void jtoken::patch_type(jtoken_type type, jmodifiers modifiers)
     {
         if (type == _type)

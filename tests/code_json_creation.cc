@@ -85,6 +85,27 @@ void test_json_object()
 	ASSERT_STREQ(empty_obj.c_str(), R"({"bool_key": true, "double_key": 5.5, "int_key": 5, "null_key": null, "str_key": "str"})");
 }
 
+void test_json_parse()
+{
+	const char* orig_val = R"([
+	 {
+		"id": "gfhkd-54380f-fdsfsh475348-fdsj", 
+		"balance": 1000.00
+	}
+]
+)";
+	jtoken test = json(orig_val);
+	if (test.is_valid())
+	{
+		std::cout << "[ VALUE ID ] " << test[0]["id"].c_str() << '\n';
+		std::cout << "[ VALUE OBJ] " << test.c_str() << '\n';
+	}
+	else
+	{
+		FAIL() << test.c_str();
+	}
+}
+
 TEST(JSON, CreateString)
 {
 	try
@@ -324,22 +345,13 @@ TEST(ValueConvertion, Nulls)
 }
 
 TEST(PARSER, Parse)
-{	
-	jtoken test = json(R"([
-	 {
-		"id": "12345", 
-		"balance": 1000.00
-	}
-]
-)");
-	
-	if (test.get_type() == jtoken_err)
+{
+	try
 	{
-		FAIL() << test.c_str();
+		test_json_parse();
 	}
-	else
+	catch (std::exception&)
 	{
-		std::cout << "[ VALUE    ] " << test[0]["id"].c_str() << '\n';
+		FAIL();
 	}
-	const char* test_val = test.c_str();
 }

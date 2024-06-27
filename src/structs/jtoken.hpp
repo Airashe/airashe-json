@@ -167,6 +167,8 @@ namespace airashe::json
         bool to_bool() const;
         operator bool() const { return to_bool(); }
 
+        bool is_valid() const;
+
         /**
          * Get type of token.
          * @return Returns type of token.
