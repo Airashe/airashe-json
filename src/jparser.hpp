@@ -181,10 +181,13 @@ namespace airashe::json
             {
                 char peek_char = next(true);
                 if (peek_char == ']')
+                {
+                    next();
                     return;
+                }
                 if (peek_char == ',')
                 {
-                    _charIndex++;
+                    next();
                     continue;
                 }
     
@@ -204,10 +207,13 @@ namespace airashe::json
             {
                 char peek_char = next(true);
                 if (peek_char == '}')
+                {
+                    next();
                     return;
+                }
                 if (peek_char == ',')
                 {
-                    _charIndex++;
+                    next();
                     continue;
                 }
 
@@ -269,7 +275,7 @@ namespace airashe::json
             if (target.get_type() == jtoken_err)
                 return true;
 
-            // TODO: write functions that makes jtoken behave like standart container.
+            // TODO: write functions that makes jgtoken behave like standart container.
         }
 
     public:

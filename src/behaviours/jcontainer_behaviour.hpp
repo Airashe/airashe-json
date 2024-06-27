@@ -58,10 +58,10 @@ namespace airashe::json
             jtoken_value const* src = (jtoken_value const*)source;
             if (src->value.childrens != nullptr)
             {
-                for (int i = 0; i < src->value.childrens->size(); i++)
+                for (auto& [key, token] : *src->value.childrens)
                 {
-                    auto& child = src->value.childrens->at(jindex(i)); // TODO: can not access elements within the map if object
-                    target->value.childrens->insert({ jindex(i), child });
+                    auto index = jindex(key.get_index(), key.get_name());
+					target->value.childrens->insert({ index, token });
                 }
             }
 

@@ -5,7 +5,7 @@
 #include "iostream"
 using namespace airashe::json;
 
-/*void test_json_string()
+void test_json_string()
 {
 	jtoken str = "test_string";
 	const char* str_val = str.c_str();
@@ -321,10 +321,10 @@ TEST(ValueConvertion, Nulls)
 
 	test = airashe::json::jnull();
 	ASSERT_EQ(test.get_type(), jtoken_null);
-}*/
+}
 
 TEST(PARSER, Parse)
-{
+{	
 	jtoken test = json(R"([
 	 {
 		"id": "12345", 
@@ -339,7 +339,7 @@ TEST(PARSER, Parse)
 	}
 	else
 	{
-		std::cout << "[ VALUE    ] " << test.c_str() << '\n';
+		std::cout << "[ VALUE    ] " << test[0]["id"].c_str() << '\n';
 	}
 	const char* test_val = test.c_str();
 }
