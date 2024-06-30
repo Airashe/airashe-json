@@ -10,41 +10,13 @@ namespace airashe::json
     class jnull_behaviour : public jtoken_behaviour
     {
     public:
-        void cleanup(jtoken_value* value) const override
-        {
-            value->modifiers = jmod_none;
-            value->value.string = nullptr;
-        }
-        
-        void assign_value(jtoken_value* target, const void* source) const override
-        {
-            target->modifiers = jmod_none;
-            target->value.string = nullptr;
-        }
-        
-        void copy_value(jtoken_value* target, const jtoken_value* source) const override
-        {
-            target->modifiers = jmod_none;
-            target->value.string = nullptr;
-        }
+        void cleanup(jtoken_value* value) const override;
+        void assign_value(jtoken_value* target, const void* source) const override;
+        void copy_value(jtoken_value* target, const jtoken_value* source) const override;
+        void move_value(jtoken_value* target, jtoken_value* source) const override;
+        void patch_value(jtoken_value* target, jtoken_value const* source, jtoken_behaviour const* source_behaviour) override;
 
-        void move_value(jtoken_value* target, jtoken_value* source) const override
-        {
-            target->modifiers = jmod_none;
-            target->value.string = nullptr;
-        }
-        
         long long to_ll(const jtoken_value* value) const override { return 0; }
-
-        void patch_value(jtoken_value* target, jtoken_value const* source, jtoken_behaviour* const source_behaviour) override
-        {
-            if (target == nullptr)
-                return;
-
-            target->modifiers = jmod_none;
-            target->value.string = nullptr;
-        }
-        
         unsigned long long to_ull(const jtoken_value* value) const override { return 0; }
         long to_l(const jtoken_value* value) const override { return 0; }
         unsigned long to_ul(const jtoken_value* value) const override { return 0; }

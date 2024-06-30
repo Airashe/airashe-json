@@ -1,7 +1,10 @@
 ﻿#pragma once
 #include <stdexcept>
+#include <map>
 
 #include "structs/jmodifiers.hpp"
+#include "structs/jtoken_value.hpp"
+#include "structs/jindex.hpp"
 
 namespace airashe::json
 {
@@ -74,7 +77,7 @@ namespace airashe::json
          * @param source_behaviour behaviour of source.
          */
         virtual void patch_value(jtoken_value* target, jtoken_value const* source,
-                                 jtoken_behaviour* const source_behaviour) = 0;
+                                 jtoken_behaviour const* source_behaviour) = 0;
 
         /**
           * @brief Access element within value of token.

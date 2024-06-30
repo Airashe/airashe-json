@@ -20,10 +20,15 @@ add_library(${AIRASHEJSON_PROJECT_NAME}
     src/behaviours/jarray_behaviour.hpp
     src/behaviours/jbehaviour_factory.hpp
     src/behaviours/jboolean_behaviour.hpp
+    src/behaviours/jboolean_behaviour.cpp
     src/behaviours/jcontainer_behaviour.hpp
+    src/behaviours/jcontainer_behaviour.cpp
     src/behaviours/jnull_behaviour.hpp
+    src/behaviours/jnull_behaviour.cpp
     src/behaviours/jnumber_behaviour.hpp 
-    src/behaviours/jstring_behaviour.hpp 
+    src/behaviours/jnumber_behaviour.cpp 
+    src/behaviours/jstring_behaviour.hpp
+    src/behaviours/jstring_behaviour.cpp 
     src/behaviours/jtoken_behaviour.hpp 
     src/structs/jproperty.hpp
     src/structs/jindex.cpp
@@ -35,6 +40,7 @@ add_library(${AIRASHEJSON_PROJECT_NAME}
     src/structs/jtoken_value.hpp
     src/structs/jtoken_value_container.hpp
     src/jparser.hpp
+    src/jparser.cpp
     
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
