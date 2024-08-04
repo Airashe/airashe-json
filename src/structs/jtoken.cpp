@@ -60,6 +60,7 @@ namespace airashe::json
     {
         _behaviour->cleanup(&_value);
         delete[] _lastStrVal;
+        _lastStrVal = nullptr;
     }
 
     jtoken::jtoken(const char* string) : _lastStrVal(nullptr)
