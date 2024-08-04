@@ -5,6 +5,33 @@
 #include "iostream"
 using namespace airashe::json;
 
+struct TestStr
+{
+private:
+	char* _str;
+public:
+	TestStr(const char* str) : _str(new char[strlen(str) + 1])
+	{
+		strcpy(_str, str);
+	}
+
+	const char* get_str() const
+	{
+		return _str;
+	}
+
+	const char* test_2() const
+	{
+		return get_str();
+	}
+
+	~TestStr()
+	{
+		delete[] _str;
+		_str = nullptr;
+	}
+};
+
 void test_json_string()
 {
 	jtoken str = "test_string";
@@ -61,10 +88,10 @@ void test_json_object()
 		});
 
 	const char* test = obj;
-
+	ASSERT_STREQ(test, "{\"key1\": \"value1\"}");
+	
 	obj["key1"] = "value2";
 	const char* test2 = obj;
-	ASSERT_STREQ(test, "{\"key1\": \"value1\"}");
 	ASSERT_STREQ(test2, "{\"key1\": \"value2\"}");
 
 	test = obj.c_str();

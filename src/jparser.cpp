@@ -223,10 +223,10 @@ namespace airashe::json
             object[0] = property_key;
             return false;
         }
-				
 
         auto property_value = parse();
         object[property_key.c_str()] = property_value;
+        return true;
     }
 
     bool jparser::check_errors(jtoken& target)

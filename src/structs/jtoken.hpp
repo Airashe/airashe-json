@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <cstring>
+#include <iostream>
 #include <string>
 
 #include "jtoken_type.hpp"
@@ -33,7 +34,7 @@ namespace airashe::json
         /**
          * Value of last to string.
          */
-        mutable std::string _lastStrVal;
+        mutable char* _lastStrVal;
 
         /**
             * Set type of token.
@@ -75,14 +76,17 @@ namespace airashe::json
          * Convert token to string.
          * @return Returns token as a string value.
          */
-        const char* c_str() const { return to_string().c_str(); }
-        operator const char*() const { return c_str(); }
+        const char* c_str() const;
+        operator const char*() const
+        {
+            return c_str();
+        }
 
         /**
          * Convert token to string.
          * @return Returns token as a string value.
          */
-        std::string& to_string() const;
+        std::string to_string() const;
         operator std::string() const { return to_string(); }
 
         /**
@@ -196,6 +200,7 @@ namespace airashe::json
          */
         jtoken& at(jindex index);
         jtoken& operator[](const char* index) { return at(index); }
+        jtoken& operator[](char* index) { return at(index); }
         jtoken& operator[](int index) { return at(index); }
 
         bool empty() const;

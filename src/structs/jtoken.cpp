@@ -11,10 +11,10 @@ namespace airashe::json
         set_type(jtoken_err);
         _value.value.string = nullptr;
         _value.modifiers = jmod_none;
-        _lastStrVal = std::string();
+        _lastStrVal = nullptr;
     }
 
-    jtoken::jtoken(const jtoken& other)
+    jtoken::jtoken(const jtoken& other) : _lastStrVal(nullptr)
     {
         set_type(other._type);
 		_behaviour->copy_value(&_value, &other._value);
@@ -32,10 +32,12 @@ namespace airashe::json
         return *this;
     }
 
-    jtoken::jtoken(jtoken&& other) noexcept
+    jtoken::jtoken(jtoken&& other) noexcept : _lastStrVal(nullptr)
     {
         set_type(other._type);
         _behaviour->move_value(&_value, &other._value);
+        _lastStrVal = other._lastStrVal;
+        other._lastStrVal = nullptr;
     }
 
     jtoken& jtoken::operator=(jtoken&& other) noexcept
@@ -47,15 +49,20 @@ namespace airashe::json
             _behaviour->cleanup(&_value);
         set_type(other._type);
         _behaviour->move_value(&_value, &other._value);
+        
+        _lastStrVal = other._lastStrVal;
+        other._lastStrVal = nullptr;
+        
         return *this;
     }
 
     jtoken::~jtoken()
     {
         _behaviour->cleanup(&_value);
+        delete[] _lastStrVal;
     }
 
-    jtoken::jtoken(const char* string)
+    jtoken::jtoken(const char* string) : _lastStrVal(nullptr)
     {
         if (string == nullptr)
         {
@@ -67,114 +74,136 @@ namespace airashe::json
         _behaviour->assign_value(&_value, string);
     }
 
-    jtoken::jtoken(const std::string& string)
+    jtoken::jtoken(const std::string& string) : _lastStrVal(nullptr)
     {
         set_type(jtoken_string);
         _behaviour->assign_value(&_value, string.c_str());
     }
 
-    jtoken::jtoken(long long int number)
+    jtoken::jtoken(long long int number) : _lastStrVal(nullptr)
     {
         set_type(jtoken_number);
         _value.modifiers = jmod_number_long_long;
         _behaviour->assign_value(&_value, &number);
     }
 
-    jtoken::jtoken(unsigned long long int number)
+    jtoken::jtoken(unsigned long long int number) : _lastStrVal(nullptr)
     {
         set_type(jtoken_number);
         _value.modifiers = jmod_number_long_long & jmod_number_unsigned;
         _behaviour->assign_value(&_value, &number);
     }
 
-    jtoken::jtoken(long int number)
+    jtoken::jtoken(long int number) : _lastStrVal(nullptr)
     {
         set_type(jtoken_number);
         _value.modifiers = jmod_number_long;
         _behaviour->assign_value(&_value, &number);
     }
 
-    jtoken::jtoken(unsigned long int number)
+    jtoken::jtoken(unsigned long int number) : _lastStrVal(nullptr)
     {
         set_type(jtoken_number);
         _value.modifiers = jmod_number_long & jmod_number_unsigned;
         _behaviour->assign_value(&_value, &number);
     }
 
-    jtoken::jtoken(int number)
+    jtoken::jtoken(int number) : _lastStrVal(nullptr)
     {
         set_type(jtoken_number);
         _value.modifiers = jmod_number_integer;
         _behaviour->assign_value(&_value, &number);
     }
 
-    jtoken::jtoken(unsigned int number)
+    jtoken::jtoken(unsigned int number) : _lastStrVal(nullptr)
     {
         set_type(jtoken_number);
         _value.modifiers = jmod_number_integer & jmod_number_unsigned;
         _behaviour->assign_value(&_value, &number);
     }
 
-    jtoken::jtoken(short number)
+    jtoken::jtoken(short number) : _lastStrVal(nullptr)
     {
         set_type(jtoken_number);
         _value.modifiers = jmod_number_short;
         _behaviour->assign_value(&_value, &number);
     }
 
-    jtoken::jtoken(unsigned short number)
+    jtoken::jtoken(unsigned short number) : _lastStrVal(nullptr)
     {
         set_type(jtoken_number);
         _value.modifiers = jmod_number_short & jmod_number_unsigned;
         _behaviour->assign_value(&_value, &number);
     }
 
-    jtoken::jtoken(char number)
+    jtoken::jtoken(char number) : _lastStrVal(nullptr)
     {
         set_type(jtoken_number);
         _value.modifiers = jmod_number_char;
         _behaviour->assign_value(&_value, &number);
     }
 
-    jtoken::jtoken(unsigned char number)
+    jtoken::jtoken(unsigned char number) : _lastStrVal(nullptr)
     {
         set_type(jtoken_number);
         _value.modifiers = jmod_number_char & jmod_number_unsigned;
         _behaviour->assign_value(&_value, &number);
     }
 
-    jtoken::jtoken(float number)
+    jtoken::jtoken(float number) : _lastStrVal(nullptr)
     {
         set_type(jtoken_number);
         _value.modifiers = jmod_number_float;
         _behaviour->assign_value(&_value, &number);
     }
 
-    jtoken::jtoken(double number)
+    jtoken::jtoken(double number) : _lastStrVal(nullptr)
     {
         set_type(jtoken_number);
         _value.modifiers = jmod_number_double;
         _behaviour->assign_value(&_value, &number);
     }
 
-    jtoken::jtoken(long double number)
+    jtoken::jtoken(long double number) : _lastStrVal(nullptr)
     {
         set_type(jtoken_number);
         _value.modifiers = jmod_number_longdouble;
         _behaviour->assign_value(&_value, &number);
     }
 
-    jtoken::jtoken(bool boolean)
+    jtoken::jtoken(bool boolean) : _lastStrVal(nullptr)
     {
         set_type(jtoken_boolean);
         _value.modifiers = jmod_none;
         _behaviour->assign_value(&_value, &boolean);
     }
-    
-    std::string& jtoken::to_string() const
+
+    const char* jtoken::c_str() const
     {
-        _lastStrVal = _behaviour->to_string(&_value);
+        auto str = _behaviour->to_string(&_value);
+        size_t len = str.size();
+        if (_lastStrVal != nullptr && strcmp(str.c_str(), _lastStrVal) == 0)
+            return _lastStrVal;
+
+        delete[] _lastStrVal;
+        _lastStrVal = new char[len + 1];
+        memcpy(_lastStrVal, str.c_str(), len);
+        _lastStrVal[len] = '\0';
         return _lastStrVal;
+    }
+    
+    std::string jtoken::to_string() const
+    {
+        const char* orig = c_str();
+        if (orig == nullptr)
+            return "";
+
+        const size_t len = strlen(orig);
+        char* copy = new char[len];
+        memcpy(copy, orig, len);
+        copy[len] = '\0';
+        
+        return std::string { copy };
     }
 
     long long int jtoken::to_ll() const
